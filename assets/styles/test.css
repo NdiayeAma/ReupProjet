@@ -1,0 +1,97 @@
+/* Basic Colors*/
+.light-green-color { color: #95D99B }
+.light-green-bg-color { background-color: #95D99B; }
+.dark-green-color { color: #4D6F50; }
+.dark-green-bg-color { background-color: #4D6F50; }
+.white-color { color: #fff; }
+
+.padding-top-100px {padding-top: 100px;}
+.margin-bottom-25px {margin-bottom: 25px;}
+
+/**********************
+ *
+ * style for LOGIN
+ *
+ **********************/
+
+#loginContainer{
+    background-color: #e9ecef;
+    height: 100vh;
+}
+
+.login-form {
+    width: auto;
+    margin: 0 auto;
+    padding-top: 150px;
+}
+
+.login-form .hint-text {
+    color: #fff;
+    text-align: center;
+    font-size: 0.8em;
+
+}
+
+.form-control, .btn {
+    min-height: 38px;
+    border-radius: 8px;
+}
+
+.login-btn {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.social-btn {
+
+}
+
+.input-group {
+    background-color: #fff;
+    color: #212529;
+    border: 2px solid #000;
+    border-radius: 8px;
+}
+
+.input-group input::placeholder {
+    color: #090108;
+    background-color: #fdfdfd;
+    font-size: 1em;
+}
+
+.input-group>.custom-select:not(:first-child),
+.input-group>.form-control:not(:first-child) {
+    color: black;
+    background-color: #ffffff;
+    text-transform: none;
+    font-size: 1em;
+    border: none;
+}
+
+
+.input-group-addon .fa {
+    font-size: 18px;
+    padding: 10px;
+    color: #090108;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    padding-left: 55px;
+    padding-right: 55px;
+}
+
+.clearfix {
+    padding-left: 55px;
+    padding-right: 55px;
+}
+
+.btn-success,
+.btn-success:hover {
+    height: 42px;
+    color: #090108;
+    background-color: #fff;
+    border-color: #090108 !important;
+    text-transform: uppercase;
+    font-size: 1em;
+}

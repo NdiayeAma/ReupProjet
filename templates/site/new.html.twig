@@ -1,0 +1,58 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <head>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var container = document.getElementById('hallsContainer');
+                var addButton = document.getElementById('addHalls');
+                var numberOfHallsInput = document.getElementById('nombreHalls');
+
+                addButton.addEventListener('click', function() {
+                    while (container.firstChild) {
+                        container.removeChild(container.firstChild);
+                    }
+                    var numberOfHalls = parseInt(numberOfHallsInput.value);
+
+                    for (var i = 0; i < numberOfHalls; i++) {
+                        var hallFieldset = document.createElement('fieldset');
+
+                        var legend = document.createElement('legend');
+                        legend.textContent = 'Hall ' + (i + 1);
+                        hallFieldset.appendChild(legend);
+
+                        var hallNameLabel = document.createElement('label');
+                        hallNameLabel.textContent = 'Nom du hall :';
+                        var hallNameInput = document.createElement('input');
+                        hallNameInput.setAttribute('type', 'text');
+                        hallNameInput.setAttribute('name', 'halls[' + i + '][nomhall]');
+                        hallNameInput.setAttribute('required', 'required');
+                        hallFieldset.appendChild(hallNameLabel);
+                        hallFieldset.appendChild(hallNameInput);
+
+                        container.appendChild(hallFieldset);
+                    }
+                });
+            });
+        </script>
+    </head>
+    <form action="creersite" method="post" class="form-control">
+        <label for="nomsite">Nom du site</label>
+        <input class="form-control" type="text" name="nomsite" id="nomsite" required>
+        <label for="nombreHalls">Nombre de halls à attribuer :</label>
+
+        <div class="input-group mb-3">
+            <input class="form-control" type="number" id="nombreHalls" name="nombreHalls" min="1"  aria-label="Recipient's username" aria-describedby="basic-addon2" required>
+
+            <div class="input-group-append">
+                <button type="button" id="addHalls" class="btn btn-primary">Ajouter hall</button>
+            </div>
+        </div>
+
+
+        <div id="hallsContainer">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-left: 40%;"> Ajouter le site  </button>
+    </form>
+
+{% endblock %}

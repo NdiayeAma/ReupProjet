@@ -1,0 +1,572 @@
+{% extends 'baselogin.html.twig' %}
+
+{% block body %}
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f0f4f8;
+            }
+
+            .container {
+                max-width: 640px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .header img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+                border: 2px solid #ddd;
+            }
+
+            h1, h2 {
+                font-size: 1.3em;
+                margin-bottom: 10px;
+                color: #333;
+                text-align: center;
+            }
+
+            p, label {
+                font-size: 0.9em;
+                color: #555;
+            }
+
+            input[type="text"], input[type="number"], textarea, select {
+                width: 100%;
+                margin-top: 5px;
+                margin-bottom: 15px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+                background-color: #f9f9f9;
+            }
+
+            .form-check {
+                margin-bottom: 10px;
+            }
+
+            .form-check input {
+                margin-right: 10px;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            .btn-container {
+                display: flex;
+                justify-content: space-between; /* Espace les boutons de manière égale */
+                gap: 10px; /* Ajouter un petit espacement entre les boutons */
+            }
+
+            .btn-dark {
+                background-color: #3565AE;
+                border-color: #3565AE;
+                color: #fff;
+                padding: 15px;
+                font-size: 1.1em;
+                border-radius: 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block; /* S'assurer que les boutons prennent seulement la place nécessaire */
+                width: 48%; /* Ajuster la largeur pour les rendre plus petits et les placer côte à côte */
+                cursor: pointer;
+                border: none;
+                transition: background-color 0.3s ease, transform 0.3s ease;
+            }
+
+            .btn-dark:hover {
+                background-color: #3565AE;
+                transform: scale(1.05);
+                border-color: #3565AE;
+            }
+
+
+
+
+            section {
+                margin-bottom: 20px;
+                padding: 15px;
+                background-color: #f9f9f9;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+            }
+
+            .section-header {
+                font-size: 1.1em;
+                margin-bottom: 10px;
+                color: #333;
+            }
+
+            .section-content {
+                font-size: 0.9em;
+                color: #666;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+        </style>
+
+        <script type="text/javascript">
+            const translations = {
+                fr: {
+                    "form-title": "Formulaire de Don",
+                    "intro-text": "Cher Exposant,<br>Bienvenue sur le formulaire destiné aux exposants / standistes / décorateurs qui souhaitent faire don de matériaux pour du réemploi solidaire.<br>Complétez le questionnaire dès que possible.<br><br>Process de réemploi avec RE'UP :<br>1. J'ai un stand, du mobilier ou des matériaux que je souhaite donner à la fin de l'événement<br>2. Je remplis le formulaire et je prends contact avec RE'UP<br>3. Je démonte proprement, mets sur palette et sangle<br>4. RE'UP récupère gratuitement les matériaux revalorisables, sous réserve de validation, et les donne à ses filières solidaires<br><br>Pour toute question, contactez <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Exposant (raison sociale) *",
+                    "hall-label": "Hall *",
+                    "aisle-booth-label": "Allée & numéro de Stand *",
+                    "contact-builder-label": "Contact standiste ou décorateur sur site *",
+                    "csr-form-label": "Avez-vous téléchargé le guide de gestion des déchets ? *",
+                    "donate-materials-label": "Avez-vous prévu de donner des matériaux pour faire du réemploi ? *",
+                    "donate-wood-label": "Souhaitez-vous donner du bois ? *",
+                    "wood-types-label": "Merci de préciser le type de bois :",
+                    "furniture-quantity-label": "Souhaitez-vous faire un don de mobilier ? précisez en m³",
+                    "other-materials-label": "Souhaitez-vous donner d'autres matériaux de réemploi ? précisez en m³",
+                    "comments-label": "Avez-vous des commentaires ou d’autres informations à partager ?",
+                    "guide-download-label": "Télécharger le guide de récupération des matériaux",
+                    "submit-button": "Ajouter",
+                    "reset-button": "Effacer le formulaire"
+                },
+                en: {
+                    "form-title": "Donation Form",
+                    "intro-text": "Dear Exhibitor,<br>Welcome to the form for exhibitors/booth builders/decorators who wish to donate materials for solidary reuse.<br>Complete the questionnaire as soon as possible.<br><br>Reuse process with RE'UP:<br>1. I have a booth, furniture, or materials that I wish to donate at the end of the event<br>2. I fill out the form and contact RE'UP<br>3. I dismantle cleanly, place on pallets, and strap<br>4. RE'UP collects reusable materials for free, subject to validation, and donates them to its solidary networks<br><br>If you have any questions, contact <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Exhibitor (company name) *",
+                    "hall-label": "Hall *",
+                    "aisle-booth-label": "Aisle & booth number *",
+                    "contact-builder-label": "Contact booth builder on site *",
+                    "csr-form-label": "Have you downloaded the Waste Management Guide? *",
+                    "donate-materials-label": "Do you plan to donate materials for re-use? *",
+                    "donate-wood-label": "Would you like to donate wood? *",
+                    "wood-types-label": "Please specify which sort of wood:",
+                    "furniture-quantity-label": "Do you want to donate furniture? Specify in m³",
+                    "other-materials-label": "Do you have other materials? Specify in m³",
+                    "comments-label": "Do you have comments or details to share?",
+                    "guide-download-label": "Download the materials recovery guide",
+                    "submit-button": "Submit",
+                    "reset-button": "Reset Form"
+                },
+                es: {
+                    "form-title": "Formulario de Donación",
+                    "intro-text": "Estimado expositor,<br>Bienvenido al formulario para expositores/constructores de stands/decoradores que desean donar materiales para su reutilización solidaria.<br>Complete el cuestionario lo antes posible.<br><br>Proceso de reutilización con RE'UP:<br>1. Tengo un stand, muebles o materiales que deseo donar al final del evento<br>2. Relleno el formulario y contacto con RE'UP<br>3. Desmonto correctamente, coloco en paletas y amarro<br>4. RE'UP recoge materiales reutilizables gratis, sujeto a validación, y los dona a sus redes solidarias<br><br>Si tiene alguna pregunta, contacte con <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Expositor (nombre de la empresa) *",
+                    "hall-label": "Pabellón *",
+                    "aisle-booth-label": "Número de pasillo y stand *",
+                    "contact-builder-label": "Contacto con el constructor del stand en el sitio *",
+                    "csr-form-label": "¿Ha descargado la Guía de Gestión de Residuos? *",
+                    "donate-materials-label": "¿Planea donar materiales para su reutilización? *",
+                    "donate-wood-label": "¿Le gustaría donar madera? *",
+                    "wood-types-label": "Por favor, especifique qué tipo de madera:",
+                    "furniture-quantity-label": "¿Quiere donar muebles? Especifique en m³",
+                    "other-materials-label": "¿Tiene otros materiales? Especifique en m³",
+                    "comments-label": "¿Tiene comentarios o detalles que compartir?",
+                    "guide-download-label": "Descargue la guía de recuperación de materiales",
+                    "submit-button": "Enviar",
+                    "reset-button": "Restablecer formulario"
+                },
+                pt: {
+                    "form-title": "Formulário de Doação",
+                    "intro-text": "Caro Expositor,<br>Bem-vindo ao formulário para expositores/construtores de estandes/decoradores que desejam doar materiais para reutilização solidária.<br>Complete o questionário o mais rápido possível.<br><br>Processo de reutilização com a RE'UP:<br>1. Tenho um estande, móveis ou materiais que desejo doar ao final do evento<br>2. Preencho o formulário e contato a RE'UP<br>3. Desmonto corretamente, coloco em paletes e amarro<br>4. A RE'UP recolhe materiais reutilizáveis gratuitamente, sujeito a validação, e os doa às suas redes solidárias<br><br>Se tiver alguma dúvida, entre em contato com <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Expositor (nome da empresa) *",
+                    "hall-label": "Pavilhão *",
+                    "aisle-booth-label": "Número do corredor e estande *",
+                    "contact-builder-label": "Contato com o construtor do estande no local *",
+                    "csr-form-label": "Você baixou o Guia de Gestão de Resíduos? *",
+                    "donate-materials-label": "Você planeja doar materiais para reutilização? *",
+                    "donate-wood-label": "Gostaria de doar madeira? *",
+                    "wood-types-label": "Por favor, especifique que tipo de madeira:",
+                    "furniture-quantity-label": "Você quer doar móveis? Especifique em m³",
+                    "other-materials-label": "Você tem outros materiais? Especifique em m³",
+                    "comments-label": "Você tem comentários ou detalhes para compartilhar?",
+                    "guide-download-label": "Baixe o guia de recuperação de materiais",
+                    "submit-button": "Enviar",
+                    "reset-button": "Redefinir formulário"
+                },
+                ar: {
+                    "form-title": "استمارة التبرع",
+                    "intro-text": "عزيزي العارض،<br>مرحبًا بك في الاستمارة الخاصة بالعارضين/بناة الأكشاك/الديكورات الذين يرغبون في التبرع بالمواد لإعادة الاستخدام التضامني.<br>أكمل الاستبيان في أقرب وقت ممكن.<br><br>عملية إعادة الاستخدام مع RE'UP:<br>1. لدي كشك أو أثاث أو مواد أرغب في التبرع بها في نهاية الحدث<br>2. أملأ الاستمارة وأتواصل مع RE'UP<br>3. أفكك بشكل نظيف، وأضع على المنصات وأربط<br>4. تقوم RE'UP بجمع المواد القابلة لإعادة الاستخدام مجانًا، مع مراعاة التحقق، وتتبرع بها لشبكاتها التضامنية<br><br>إذا كان لديك أي أسئلة، يرجى الاتصال بـ <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "العارض (اسم الشركة) *",
+                    "hall-label": "القاعة *",
+                    "aisle-booth-label": "رقم الممر والكشك *",
+                    "contact-builder-label": "اتصل ببناء الكشك في الموقع *",
+                    "csr-form-label": "هل قمت بتنزيل دليل إدارة النفايات؟ *",
+                    "donate-materials-label": "هل تخطط للتبرع بمواد لإعادة الاستخدام؟ *",
+                    "donate-wood-label": "هل ترغب في التبرع بالخشب؟ *",
+                    "wood-types-label": "يرجى تحديد نوع الخشب:",
+                    "furniture-quantity-label": "هل تريد التبرع بالأثاث؟ حدد بالمتر المكعب",
+                    "other-materials-label": "هل لديك مواد أخرى؟ حدد بالمتر المكعب",
+                    "comments-label": "هل لديك تعليقات أو تفاصيل لمشاركتها؟",
+                    "guide-download-label": "قم بتنزيل دليل استرداد المواد",
+                    "submit-button": "إرسال",
+                    "reset-button": "إعادة تعيين النموذج"
+                },
+                zh: {
+                    "form-title": "捐赠表格",
+                    "intro-text": "尊敬的参展商，<br>欢迎使用此表格，适用于希望捐赠材料以供慈善再利用的参展商/展位搭建者/装饰者。<br>请尽快完成问卷。<br><br>通过RE'UP进行再利用的过程:<br>1. 我有一个展位、家具或材料，愿意在活动结束时捐赠<br>2. 我填写表格并联系RE'UP<br>3. 我清理干净，放在托盘上并绑好<br>4. RE'UP免费收集可重复使用的材料，经过验证后，将其捐赠给其慈善网络<br><br>如果您有任何问题，请联系 <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "参展商（公司名称）*",
+                    "hall-label": "展厅 *",
+                    "aisle-booth-label": "过道及展位号 *",
+                    "contact-builder-label": "现场展位搭建者联系人 *",
+                    "csr-form-label": "您是否下载了废物管理指南？ *",
+                    "donate-materials-label": "您计划捐赠可再利用的材料吗？ *",
+                    "donate-wood-label": "您愿意捐赠木材吗？ *",
+                    "wood-types-label": "请注明是哪种木材:",
+                    "furniture-quantity-label": "您想捐赠家具吗？ 请注明体积（立方米）",
+                    "other-materials-label": "您有其他材料吗？ 请注明体积（立方米）",
+                    "comments-label": "您有评论或详细信息要分享吗？",
+                    "guide-download-label": "下载材料回收指南",
+                    "submit-button": "提交",
+                    "reset-button": "重置表单"
+                },
+                de: {
+                    "form-title": "Spendenformular",
+                    "intro-text": "Sehr geehrter Aussteller,<br>Willkommen beim Formular für Aussteller/Standbauer/Dekorateure, die Materialien für die solidarische Wiederverwendung spenden möchten.<br>Bitte füllen Sie den Fragebogen so schnell wie möglich aus.<br><br>Wiederverwendungsprozess mit RE'UP:<br>1. Ich habe einen Stand, Möbel oder Materialien, die ich am Ende der Veranstaltung spenden möchte<br>2. Ich fülle das Formular aus und kontaktiere RE'UP<br>3. Ich baue sauber ab, platziere auf Paletten und verzurre<br>4. RE'UP sammelt kostenlos wiederverwendbare Materialien, vorbehaltlich der Validierung, und spendet diese an ihre solidarischen Netzwerke<br><br>Wenn Sie Fragen haben, kontaktieren Sie bitte <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Aussteller (Firmenname) *",
+                    "hall-label": "Halle *",
+                    "aisle-booth-label": "Gang- & Standnummer *",
+                    "contact-builder-label": "Kontaktperson für Standbauer vor Ort *",
+                    "csr-form-label": "Haben Sie den Abfallwirtschaftsleitfaden heruntergeladen? *",
+                    "donate-materials-label": "Planen Sie, Materialien zur Wiederverwendung zu spenden? *",
+                    "donate-wood-label": "Möchten Sie Holz spenden? *",
+                    "wood-types-label": "Bitte geben Sie an, welche Art von Holz:",
+                    "furniture-quantity-label": "Möchten Sie Möbel spenden? Bitte in m³ angeben",
+                    "other-materials-label": "Haben Sie andere Materialien? Bitte in m³ angeben",
+                    "comments-label": "Haben Sie Kommentare oder Details, die Sie teilen möchten?",
+                    "guide-download-label": "Laden Sie den Leitfaden zur Materialwiederverwendung herunter",
+                    "submit-button": "Absenden",
+                    "reset-button": "Formular zurücksetzen"
+                },
+                it: {
+                    "form-title": "Modulo di Donazione",
+                    "intro-text": "Caro Espositore,<br>Benvenuto al modulo per espositori/costruttori di stand/decoratori che desiderano donare materiali per il riutilizzo solidale.<br>Completa il questionario il prima possibile.<br><br>Processo di riutilizzo con RE'UP:<br>1. Ho uno stand, mobili o materiali che desidero donare alla fine dell'evento<br>2. Compilo il modulo e contatto RE'UP<br>3. Smonto correttamente, metto sui pallet e lego<br>4. RE'UP raccoglie gratuitamente materiali riutilizzabili, soggetti a convalida, e li dona alle sue reti solidali<br><br>Per qualsiasi domanda, contatta <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Espositore (nome dell'azienda) *",
+                    "hall-label": "Padiglione *",
+                    "aisle-booth-label": "Numero del corridoio e dello stand *",
+                    "contact-builder-label": "Contatto con il costruttore dello stand in loco *",
+                    "csr-form-label": "Hai scaricato la Guida alla Gestione dei Rifiuti? *",
+                    "donate-materials-label": "Hai intenzione di donare materiali per il riutilizzo? *",
+                    "donate-wood-label": "Vuoi donare legno? *",
+                    "wood-types-label": "Si prega di specificare quale tipo di legno:",
+                    "furniture-quantity-label": "Vuoi donare mobili? Specifica in m³",
+                    "other-materials-label": "Hai altri materiali? Specifica in m³",
+                    "comments-label": "Hai commenti o dettagli da condividere?",
+                    "guide-download-label": "Scarica la guida al recupero dei materiali",
+                    "submit-button": "Invia",
+                    "reset-button": "Reimposta il modulo"
+                },
+                pl: {
+                    "form-title": "Formularz Darowizny",
+                    "intro-text": "Szanowny Wystawco,<br>Witamy w formularzu dla wystawców/budowniczych stoisk/dekoratorów, którzy chcą przekazać materiały do solidarnego ponownego wykorzystania.<br>Wypełnij kwestionariusz tak szybko, jak to możliwe.<br><br>Proces ponownego wykorzystania z RE'UP:<br>1. Mam stoisko, meble lub materiały, które chcę przekazać po zakończeniu wydarzenia<br>2. Wypełniam formularz i kontaktuję się z RE'UP<br>3. Czysto demontuję, umieszczam na paletach i mocuję<br>4. RE'UP bezpłatnie zbiera materiały do ponownego wykorzystania, pod warunkiem walidacji, i przekazuje je swoim sieciom solidarnościowym<br><br>Jeśli masz jakieś pytania, skontaktuj się z <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Wystawca (nazwa firmy) *",
+                    "hall-label": "Hala *",
+                    "aisle-booth-label": "Numer alejki i stoiska *",
+                    "contact-builder-label": "Kontakt na miejscu budowy stoiska *",
+                    "csr-form-label": "Czy pobrałeś przewodnik zarządzania odpadami? *",
+                    "donate-materials-label": "Czy planujesz przekazać materiały do ponownego wykorzystania? *",
+                    "donate-wood-label": "Czy chcesz przekazać drewno? *",
+                    "wood-types-label": "Proszę podać, jaki rodzaj drewna:",
+                    "furniture-quantity-label": "Czy chcesz przekazać meble? Podaj w m³",
+                    "other-materials-label": "Czy masz inne materiały? Podaj w m³",
+                    "comments-label": "Czy masz komentarze lub szczegóły do udostępnienia?",
+                    "guide-download-label": "Pobierz przewodnik odzyskiwania materiałów",
+                    "submit-button": "Wyślij",
+                    "reset-button": "Zresetuj formularz"
+                },
+                ro: {
+                    "form-title": "Formular de Donație",
+                    "intro-text": "Stimate Expozant,<br>Bine ați venit la formularul pentru expozanți/construcții standuri/decoratori care doresc să doneze materiale pentru reutilizare solidară.<br>Completați chestionarul cât mai curând posibil.<br><br>Procesul de reutilizare cu RE'UP:<br>1. Am un stand, mobilier sau materiale pe care doresc să le donez la sfârșitul evenimentului<br>2. Completez formularul și iau legătura cu RE'UP<br>3. Dezasamblez corect, pun pe paleți și leg<br>4. RE'UP colectează materiale reutilizabile gratuit, sub rezerva validării, și le donează rețelelor sale de solidaritate<br><br>Dacă aveți întrebări, contactați <a href='mailto:contact@bereup.com'>contact@bereup.com</a>",
+                    "exhibitor-label": "Expozant (numele companiei) *",
+                    "hall-label": "Sala *",
+                    "aisle-booth-label": "Număr culoar și stand *",
+                    "contact-builder-label": "Contact constructor stand la fața locului *",
+                    "csr-form-label": "Ați descărcat Ghidul de Gestionare a Deșeurilor? *",
+                    "donate-materials-label": "Intenționați să donați materiale pentru reutilizare? *",
+                    "donate-wood-label": "Doriți să donați lemn? *",
+                    "wood-types-label": "Vă rugăm să specificați ce tip de lemn:",
+                    "furniture-quantity-label": "Doriți să donați mobilă? Specificați în m³",
+                    "other-materials-label": "Aveți alte materiale? Specificați în m³",
+                    "comments-label": "Aveți comentarii sau detalii de împărtășit?",
+                    "guide-download-label": "Descărcați ghidul de recuperare a materialelor",
+                    "submit-button": "Trimite",
+                    "reset-button": "Resetați formularul"
+                },
+                tr: {
+                    "form-title": "Bağış Formu",
+                    "intro-text": "Sayın Katılımcı,<br>Malzeme bağışında bulunmak isteyen katılımcılar/stand kurucuları/dekoratörler için hazırlanmış formumuza hoş geldiniz.<br>Anketi mümkün olan en kısa sürede tamamlayın.<br><br>RE'UP ile yeniden kullanım süreci:<br>1. Etkinlik sonunda bağışlamak istediğim bir standım, mobilyalarım veya malzemelerim var<br>2. Formu doldururum ve RE'UP ile iletişime geçerim<br>3. Temiz bir şekilde demonte ederim, paletlere yerleştiririm ve bağlarım<br>4. RE'UP, yeniden kullanılabilir malzemeleri ücretsiz olarak toplar, doğrulama sonrasında, bu malzemeleri dayanışma ağlarına bağışlar<br><br>Herhangi bir sorunuz varsa, lütfen <a href='mailto:contact@bereup.com'>contact@bereup.com</a> ile iletişime geçin",
+                    "exhibitor-label": "Katılımcı (şirket adı) *",
+                    "hall-label": "Salon *",
+                    "aisle-booth-label": "Koridor ve stand numarası *",
+                    "contact-builder-label": "Yerinde stand kurucusuyla iletişim *",
+                    "csr-form-label": "Atık Yönetimi Kılavuzunu indirdiniz mi? *",
+                    "donate-materials-label": "Yeniden kullanım için malzeme bağışında bulunmayı planlıyor musunuz? *",
+                    "donate-wood-label": "Odun bağışlamak ister misiniz? *",
+                    "wood-types-label": "Lütfen hangi tür odun olduğunu belirtin:",
+                    "furniture-quantity-label": "Mobilya bağışlamak ister misiniz? m³ cinsinden belirtin",
+                    "other-materials-label": "Başka malzemeniz var mı? m³ cinsinden belirtin",
+                    "comments-label": "Paylaşmak istediğiniz yorumlar veya ayrıntılar var mı?",
+                    "guide-download-label": "Malzeme geri kazanım kılavuzunu indirin",
+                    "submit-button": "Gönder",
+                    "reset-button": "Formu sıfırla"
+                }
+            };
+
+            function changeLanguage(lang) {
+                document.getElementById('form-title').textContent = translations[lang]["form-title"];
+                document.getElementById('intro-text').innerHTML = translations[lang]["intro-text"];
+                document.getElementById('exhibitor-label').textContent = translations[lang]["exhibitor-label"];
+                document.getElementById('hall-label').textContent = translations[lang]["hall-label"];
+                document.getElementById('aisle-booth-label').textContent = translations[lang]["aisle-booth-label"];
+                document.getElementById('contact-builder-label').textContent = translations[lang]["contact-builder-label"];
+                document.getElementById('csr-form-label').textContent = translations[lang]["csr-form-label"];
+                document.getElementById('donate-materials-label').textContent = translations[lang]["donate-materials-label"];
+                document.getElementById('donate-wood-label').textContent = translations[lang]["donate-wood-label"];
+                document.getElementById('wood-types-label').textContent = translations[lang]["wood-types-label"];
+                document.getElementById('furniture-quantity-label').textContent = translations[lang]["furniture-quantity-label"];
+                document.getElementById('other-materials-label').textContent = translations[lang]["other-materials-label"];
+                document.getElementById('comments-label').textContent = translations[lang]["comments-label"];
+                document.getElementById('guide-download-label').textContent = translations[lang]["guide-download-label"];
+                document.getElementById('submit-button').textContent = translations[lang]["submit-button"];
+                document.getElementById('reset-button').textContent = translations[lang]["reset-button"]; // Ajouter cette ligne
+            }
+
+
+            function toggleWoodSection() {
+                const woodSection = document.getElementById('woodTypes');
+                const donateWoodYes = document.getElementById('donateWoodYes');
+                woodSection.style.display = donateWoodYes.checked ? 'block' : 'none';
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('language-select').addEventListener('change', function(event) {
+                    changeLanguage(event.target.value);
+                });
+
+                document.getElementById('donateWoodYes').addEventListener('change', toggleWoodSection);
+                document.getElementById('donateWoodNo').addEventListener('change', toggleWoodSection);
+            });
+        </script>
+
+        <title>Formulaire de Don</title>
+    </head>
+
+    <body>
+    <div class="container">
+        <div class="header">
+            <img src="https://lh4.googleusercontent.com/vYah1TaZKR-d1GZjf0WviZAyhpsdRlU7fzY9M-52ifNFvVlYO7sv_ws65ft9FMBXN5MShdH3X_Dc4mFtIKccPMJN1wxjAhqT-i7F-Q-iXUvTMr2F8d9dNESkNbOZYG7q3Q=w640" alt="Header Image">
+        </div>
+
+        <select id="language-select">
+            <option value="fr" selected>Français</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="pt">Português</option>
+            <option value="ar">العربية</option>
+            <option value="zh">中文</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="pl">Polski</option>
+            <option value="ro">Română</option>
+            <option value="tr">Türkçe</option>
+        </select>
+
+        <section>
+            <h1 id="form-title">Formulaire de Don</h1>
+            <p id="intro-text">
+                Cher Exposant,<br>
+                Bienvenue sur le formulaire destiné aux exposants / standistes / décorateurs qui souhaitent faire don de matériaux pour du réemploi solidaire.<br>
+                Complétez le questionnaire dès que possible.<br><br>
+                Process de réemploi avec RE'UP :<br>
+                1. J'ai un stand, du mobilier ou des matériaux que je souhaite donner à la fin de l'événement<br>
+                2. Je remplis le formulaire et je prends contact avec RE'UP<br>
+                3. Je démonte proprement, mets sur palette et sangle<br>
+                4. RE'UP récupère gratuitement les matériaux revalorisables, sous réserve de validation, et les donne à ses filières solidaires<br><br>
+                Pour toute question, contactez <a href="mailto:contact@bereup.com">contact@bereup.com</a>
+            </p>
+        </section>
+
+        <form action="/submitformulaire" method="post">
+            <section>
+                <div class="section-header" id="exhibitor-label">Exposant (raison sociale) *</div>
+                <div class="section-content">
+                    <input type="text" id="companyName" name="companyName" required>
+                </div>
+            </section>
+            <section hidden="hidden">
+                <div class="section-content">
+                    <input type="text" name="idevenement"  value="{{ idevenement }}">
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="hall-label">Hall *</div>
+                <div class="section-content">
+                    <select id="hall" name="hall" required>
+                        <option value="" disabled selected>Choisir...</option>
+                        <option value="5 A">5 A</option>
+                        <option value="5 B">5 B</option>
+                        <option value="5 EXT">5 EXT</option>
+                        <option value="6">6</option>
+                        <option value="6 EXT">6 EXT</option>
+                    </select>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="aisle-booth-label">Allée & numéro de Stand *</div>
+                <div class="section-content">
+                    <input type="text" id="aisleBoothNumber" name="aisleBoothNumber" required>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="contact-builder-label">Contact standiste ou décorateur sur site *</div>
+                <div class="section-content">
+                    <input type="text" id="contactBuilder" name="contactBuilder" required>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="csr-form-label">Avez-vous été sensibilisé ? *</div>
+                <div class="section-content">
+                    <div class="form-check">
+                        <input type="radio" id="sensiblisation" name="sensiblisation" value="yes" required>
+                        <label for="csrFormDownloadedYes">Oui</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" id="sensiblisation" name="sensiblisation" value="no" required>
+                        <label for="csrFormDownloadedNo">Non</label>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="csr-form-label">Avez-vous téléchargé le guide de gestion des déchets ? *</div>
+                <div class="section-content">
+                    <div class="form-check">
+                        <input type="radio" id="csrFormDownloadedYes" name="csrFormDownloaded" value="yes" required>
+                        <label for="csrFormDownloadedYes">Oui</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" id="csrFormDownloadedNo" name="csrFormDownloaded" value="no" required>
+                        <label for="csrFormDownloadedNo">Non</label>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="donate-materials-label">Avez-vous prévu de donner des matériaux pour faire du réemploi ? *</div>
+                <div class="section-content">
+                    <div class="form-check">
+                        <input type="radio" id="donateMaterialsYes" name="donateMaterials" value="yes" required>
+                        <label for="donateMaterialsYes">Oui</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" id="donateMaterialsNo" name="donateMaterials" value="no" required>
+                        <label for="donateMaterialsNo">Non</label>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="donate-wood-label">Souhaitez-vous donner du bois ? *</div>
+                <div class="section-content">
+                    <div class="form-check">
+                        <input type="radio" id="donateWoodYes" name="donateWood" value="yes" required>
+                        <label for="donateWoodYes">Oui</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" id="donateWoodNo" name="donateWood" value="no" required>
+                        <label for="donateWoodNo">Non</label>
+                    </div>
+
+                    <div id="woodTypes" class="section-content" style="display:none;">
+                        <p id="wood-types-label">Merci de préciser le type de bois :</p>
+
+                        <div class="form-check">
+                            <input type="checkbox" id="woodTypeMassif" name="woodTypes[]" value="Massif">
+                            <label for="woodTypeMassif">Bois massif</label>
+                            <input type="number" class="hidden" name="woodQuantities[]" placeholder="Quantité">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="woodTypePlywood" name="woodTypes[]" value="Plywood">
+                            <label for="woodTypePlywood">Contre-plaqué</label>
+                            <input type="number" class="hidden" name="woodQuantities[]" placeholder="Quantité">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="woodTypeMelamine" name="woodTypes[]" value="Melamine">
+                            <label for="woodTypeMelamine">Mélaminé</label>
+                            <input type="number" class="hidden" name="woodQuantities[]" placeholder="Quantité">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="woodTypeParticleboard" name="woodTypes[]" value="Particleboard">
+                            <label for="woodTypeParticleboard">Aggloméré</label>
+                            <input type="number" class="hidden" name="woodQuantities[]" placeholder="Quantité">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="woodTypeParquet" name="woodTypes[]" value="Parquet">
+                            <label for="woodTypeParquet">Parquet</label>
+                            <input type="number" class="hidden" name="woodQuantities[]" placeholder="Quantité">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="woodTypeOSB" name="woodTypes[]" value="OSB">
+                            <label for="woodTypeOSB">OSB</label>
+                            <input type="number" class="hidden" name="woodQuantities[]" placeholder="Quantité">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="woodTypeMDF" name="woodTypes[]" value="MDF">
+                            <label for="woodTypeMDF">Bois MDF</label>
+                            <input type="number" class="hidden" name="woodQuantities[]" placeholder="Quantité">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="furniture-quantity-label">Souhaitez-vous faire un don de mobilier ? précisez en m3</div>
+                <div class="section-content">
+                    <input type="text" id="furnitureQuantity" name="furnitureQuantity">
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="other-materials-label">Souhaitez-vous donner d'autres matériaux de réemploi ? précisez en m3</div>
+                <div class="section-content">
+                    <input type="text" id="otherMaterialsQuantity" name="otherMaterialsQuantity">
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="comments-label">Avez-vous des commentaires ou d’autres informations à partager ?</div>
+                <div class="section-content">
+                    <textarea id="comments" name="comments" rows="4"></textarea>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header" id="guide-download-label">Télécharger le guide de récupération des matériaux</div>
+                <div class="section-content text-center">
+                    <img src="https://lh4.googleusercontent.com/fEveE87DDUSmw_ZowrEkJaVCLBqRGd2ZlDHe5ScmrFpnNN7M6H-S8vwyS0n2m-n349yd24CMoOZukEqC6Dt78Ui9MGDPX7I8Ds6vQGa8-vlMScgEIA5WKVO3-08XUMNywg=w200" alt="Materials Recovery Guide" style="max-width: 100%; height: auto;">
+                </div>
+            </section>
+
+            <div class="btn-container">
+                <button type="submit" class="btn-dark" id="submit-button">Ajouter</button>
+                <button type="reset" class="btn-dark" id="reset-button">Effacer le formulaire</button>
+            </div>
+        </form>
+    </div>
+    </body>
+{% endblock %}

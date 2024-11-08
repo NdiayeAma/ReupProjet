@@ -1,0 +1,49 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnExport").click(function () {
+                let table = document.getElementsByTagName("table");
+                console.log(table);
+                debugger;
+                TableToExcel.convert(table[0], {
+                    name: `suividetaille.xlsx`,
+                    sheet: {
+                        name: 'Usermanagement'
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+    {% for suivi in suivicentredetri %}
+
+
+    <div class="mb-3">
+        <legend></legend>
+        <label class="form-label">Suivi du {{ suivi.flux}} du {{ suivi.datedesoumission|date('Y-m-d') }} {{ suivi.centredetris.nom }}: </label>
+       <br>
+        {{ suivi.commentaire }}
+        <div class="form-control">
+            {% for photo in suivi.photosarchives %}
+                <img src="{{ asset('uploads/' ~ photo) }}" alt="Photo" class="img-thumbnail me-2" style="max-width: 150px;">
+            {% endfor %}
+        </div>
+            {% endfor %}
+    </div>
+
+    {% if suivicentredetri is empty %}
+                Aucun suivi
+            {% endif %}
+
+
+
+<br>
+
+
+{% endblock %}

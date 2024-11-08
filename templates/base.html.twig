@@ -4,14 +4,140 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
         {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+
     </head>
     <body>
+    <nav class="navbar navbar-expand-lg navbar-light " style="background-color: #e4e4e4">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button
+                    data-mdb-collapse-init
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                    data-mdb-target="#navbarSupportedContent"
+
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Navbar brand -->
+                <a class="navbar-brand mt-2 mt-lg-0"href="{{ path('app_accueil') }}">
+                    <img
+                            src="{{ asset('images/logoreuptrans.png') }}"
+                            height="45"
+                            WIDTH="55"
+                            alt="MDB Logo"
+                            loading="lazy"
+                    />
+                </a>
+
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                            <a href="{{ path('app_accueil') }}" class="nav-link">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_suivi_index') }}" class="nav-link">Mes suivis</a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a href="{{ path('app_disponibilites_toutes') }}" class="nav-link">Gerer planning</a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <button onclick="location.href='{{ path('app_formulairedechethuile_index') }}'" data-mdb-ripple-init type="button" class="btn btn-outline-dark me-3">
+                            Biodéchets&huile
+                        </button>
+                    </li>
+                        <li>
+
+                        <button onclick="location.href='{{ path('app_formulaire_index') }}'" data-mdb-ripple-init type="button" class="btn btn-outline-dark me-3">
+                            Gérer formulaire
+                        </button>
+                    </li>
+
+
+                </ul>
+
+                <!-- Left links -->
+            </div>
+            <!-- Collapsible wrapper -->
+
+            <!-- Right elements -->
+            <div class="d-flex align-items-center">
+                <!-- Icon -->
+
+
+                {% if is_granted('ROLE_ADMIN') %}
+                <button onclick="location.href='{{ path('app_ajouter_agent') }}'" data-mdb-ripple-init type="button" class="btn btn-outline-dark me-3">
+                    Ajouter agent
+                </button>
+                <button onclick="location.href='{{ path('app_gerer_personnel') }}'" data-mdb-ripple-init type="button" class="btn btn-outline-dark me-3">
+                    Gérer personnel
+                </button>
+                    <button onclick="location.href='{{ path('admin_client') }}'" data-mdb-ripple-init type="button" class="btn btn-outline-dark me-3">
+                        Espace Admin
+                    </button>
+                {% endif %}
+
+                <div class="dropdown"  >
+                    <a
+                            style="text-decoration: none;color: #5b0054;"
+                            class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                            data-bs-toggle="dropdown"
+                            href="#"
+                            id="navbarDropdownMenuAvatar"
+                            role="button"
+                            aria-expanded="false"
+                    >
+                        <img
+                                src="{{ asset('images/ouvrier2.png') }}"
+                                class="rounded-circle"
+                                height="25"
+                                alt="Black and White Portrait of a Man"
+                                loading="lazy"
+                        />
+                        Menu
+
+                    </a>
+
+                    <ul
+                            class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdownMenuAvatar"
+                    >
+                        <li>
+                            <a class="dropdown-item" href="{{ path('app_gerer_profill_agent') }}">Mon profile</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ path('app_logout') }}" >Déconnexion</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Notifications -->
+
+                <!-- Right elements -->
+
+
+            </div>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+
         {% block body %}{% endblock %}
     </body>
 </html>

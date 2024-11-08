@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de collecte d'informations </title>
+</head>
+<h2>Formulaire de collecte d'informations</h2>
+<form method="post" action="{{ path('formulaire_dechet_huile') }}" >
+    <div>
+        <label for="nom_hall">Nom du hall :</label>
+        <input type="number" id="nom_hall" name="nom_hall" required>
+    </div>
+    <div>
+        <label for="allee">Allée :</label>
+        <input type="text" id="allee" name="allee" required>
+    </div>
+    <div>
+        <label for="sacs_biodechets">Distribution de sacs biodéchets :</label>
+        <input type="checkbox" id="sacs_biodechets" name="sacs_biodechets" value="oui">
+        <label for="nombre_sacs">Nombre de sacs :</label>
+        <input type="number" id="nombre_sacs" name="nombre_sacs" min="1" disabled>
+    </div>
+    <div>
+        <label for="quantite_sacs">Quantité (50l ou 110l) :</label>
+        <select id="quantite_sacs" name="quantite_sacs" disabled>
+            <option value="50">50 litres</option>
+            <option value="110">110 litres</option>
+        </select>
+    </div>
+    <div>
+        <label for="bidon_huile">Distribution de bidon d'huile :</label>
+        <input type="checkbox" id="bidon_huile" name="bidon_huile" value="oui">
+        <label for="nombre_bidons">Nombre de bidons :</label>
+        <input type="number" id="nombre_bidons" name="nombre_bidons" min="1" disabled>
+    </div>
+    <div>
+        <label for="commentaire">Commentaire :</label>
+        <textarea id="commentaire" name="commentaire" rows="4" cols="50" class="form-control"></textarea>
+    </div>
+    <script>
+        document.getElementById('sacs_biodechets').addEventListener('change', function() {
+            document.getElementById('nombre_sacs').disabled = !this.checked;
+            document.getElementById('quantite_sacs').disabled = !this.checked;
+        });
+        document.getElementById('bidon_huile').addEventListener('change', function() {
+            document.getElementById('nombre_bidons').disabled = !this.checked;
+        });
+    </script>
+    <button type="submit">Soumettre</button>
+</form>
+{% endblock %}

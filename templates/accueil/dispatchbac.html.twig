@@ -1,0 +1,65 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <head>
+
+        <style>
+            .card-img-top {
+                width: 60px; /* Définissez la largeur souhaitée */
+                height: 60px; /* Définissez la hauteur souhaitée */
+            }
+            .limit-height {
+                max-height: 300px; /* ou toute autre valeur en pixels ou en pourcentage */
+                overflow: auto; /* si vous voulez ajouter une barre de défilement si le contenu dépasse */
+            }
+        </style>
+
+    </head>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        {% for suivi in centredetris %}
+
+
+            <div class=" limit-height">
+                <div class="card ">
+                    <div class="position-relative">
+                        <div class="position-absolute top-0 end-0 p-2">
+
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ suivi.centredetri.nom}}</h5>
+                        <p class="card-text" >
+                            <img src="{{ asset('images/bacsdr660.jpeg') }}"  class="card-img-top"
+                                 alt="Hollywood Sign on The Hill" />
+                           {{ suivi.bacdr660 }}  Bac dr (660 l), <br>
+                            <img src="{{ asset('images/bacdr250.jpeg') }}"  class="card-img-top"
+                                                                              alt="Hollywood Sign on The Hill" />
+                            {{ suivi.bacdr240}} Bac dr (240 l), <br>
+                            <img src="{{ asset('images/bacrecycle240.jpeg') }}"  class="card-img-top"
+                                 alt="Hollywood Sign on The Hill" />
+                            {{ suivi.bacrecycle240}} Bac recycle (240 l),<br>
+                            <img src="{{ asset('images/bacrecycle660.jpeg') }}"  class="card-img-top"
+                                 alt="Hollywood Sign on The Hill" />
+                            {{ suivi.bacrecycle660}} Bac recycle (660 l),
+                            <br>
+                            <img src="{{ asset('images/bacbiodechet120.jpeg') }}"  class="card-img-top"
+                                 alt="Hollywood Sign on The Hill" />
+                            {{ suivi.bacbiodechet120}} Bac biodechet (120 l),
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+    {% if centredetris is empty %}
+        Aucune donnée pour le moment
+    {% endif %}
+
+
+
+{% endblock %}

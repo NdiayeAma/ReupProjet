@@ -1,0 +1,179 @@
+
+
+{% block body %}
+    <style>
+        .header {
+            width: 100%;
+            padding: 20px;
+            height: 40px;
+            background-color: white;
+            text-align: center; /* Centrer les éléments */
+            position: relative; /* Pour le positionnement absolu des logos */
+        }
+        .fieldsetcustom {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            border: 2px solid #ddd; /* Bordure de 2 pixels solide noire */
+            padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+        }
+        .header img {
+            height: 60px; /* Hauteur fixe pour les logos */
+            width: auto; /* Maintenir le ratio de l'image */
+            /* Positionnement absolu */
+        }
+        .logo-left {
+            left: 20px; /* Placer le logo à gauche */
+        }
+        .logo-right {
+            right: 20px; /* Placer le logo à droite */
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            padding-left: 35px;
+        }
+
+        /* Définition des styles pour les tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; /* Espacement entre les tableaux */
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            max-width: 150px; /* Largeur maximale des cellules */
+            word-wrap: break-word; /* Permettre le retour à la ligne des mots longs */
+            font-size: 12px; /* Taille de la police */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        /* Appliquer une page de rupture avant chaque tableau sauf le premier */
+        table:not(:first-child) {
+            page-break-before: always;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnExport").click(function () {
+                let table = document.getElementsByTagName("table");
+                console.log(table);
+                debugger;
+                TableToExcel.convert(table[0], {
+                    name: `{{ centredetrisuivi.site.nom }}-suivi détaillé-du {{ date }}.xlsx`,
+                    sheet: {
+                        name: 'Usermanagement'
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('sortable-table');
+            new Sortable(table, {
+                animation: 150,
+                handle: 'th', // Allows only the headers to be sortable
+                onEnd: function (evt) {
+                    console.log('Column moved from', evt.oldIndex, 'to', evt.newIndex);
+                    // Optionally, send the new order to the server or store it locally
+                }
+            });
+        });
+    </script>
+
+
+
+
+    <div class="header">
+        <img src="{{ base64Image }}"  height="45"
+             WIDTH="55" alt="Logo Société 1"  class="logo-left" />
+        <img src="{{ base64Image2 }}"  height="45"
+             WIDTH="55"  alt="Logo Société 2" class="logo-right">
+    </div>
+    <h1 style="color: #3565AE">Suivi détaillé des flux</h1>
+<fieldset class="fieldsetcustom" >
+<div style="padding-bottom: 20px">
+
+
+    <strong style="color: #3565AE"> Événement : </strong>{{ evenementsuivi.nom }} <br>
+    <strong style="color: #3565AE"> Site :</strong> {{ centredetrisuivi.site.nom }} <br>
+    <strong style="color: #3565AE" > Centre de tri :  </strong>{{ centredetrisuivi.nom }}<br>
+    <strong style="color: #3565AE" > Période:  </strong> {% if start_Date is null and end_Date is not null %}
+    Du {{ minDate }} au {{ end_Date }}
+    {% elseif start_Date is null and end_Date is null %}
+        Du {{ minDate }} au {{ maxDate }}
+        {% elseif start_Date is not null and end_Date is  null %}
+        Du {{ start_Date }} au {{ maxDate }}
+        {% elseif start_Date is not null and end_Date is not null %}
+
+            Du {{ start_Date }} au {{ end_date }}
+
+
+    {% endif %}
+
+    <strong style="color: #3565AE"> cumul poids : </strong>{{ cumulpoids }} <br>
+
+
+</div>
+{% set previousDate = null %}
+    {% for date, suivisByDate in suivisGroupes %}
+        <span>Suivi flux du {{ date }}</span>
+
+        <table id="sortable-table" class="table">
+            <thead>
+            <tr>
+                <th>Evenement</th>
+                <th>Centre de tri</th>
+                <th>Client</th>
+                <th>Flux</th>
+                <th>Type de Contenant</th>
+                <th>Volume de Contenant</th>
+                <th>Poids</th>
+                <th>Nombre de contenants</th>
+                <th>Qualité du Tri</th>
+                <th>Date de Soumission</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for matiere, suivis in suivisByDate %}
+                {% for suiviData in suivis %}
+                    <tr>
+                        <td>{{ suiviData.suivi.evenement.nom }}</td>
+                        <td>{{ suiviData.suivi.centredetris.nom }}</td>
+                        <td>{{ suiviData.suivi.leclient.nom }}</td>
+                        <td>{{ suiviData.suivi.flux }}</td>
+                        <td>{{ suiviData.suivi.typecontenant }}</td>
+                        <td>{{ suiviData.suivi.volumecontenant }}</td>
+                        <td>{{ suiviData.suivi.poids }}</td>
+                        <td>{{ suiviData.suivi.collecte }}</td>
+                        <td>{{ suiviData.suivi.qualitedetribennes }}</td>
+                        <td>Le {{ suiviData.suivi.datedesoumission|date('d-m-Y') }} à {{ suiviData.suivi.heure|date('H:s')}} par {{ suiviData.suivi.auteur }}  </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% set previousDate = date %}
+    {% endfor %}
+
+</fieldset>
+
+    <div style="text-align: center"><strong > RE’UP SAS  </strong> </div><br>
+    <div style="text-align: center">  2 square vitruve BAL 14.08 75020 Paris France
+        contact@bereup.com – 06 68 83 20 98
+        wwww.bereup.com
+    </div>
+
+
+
+
+{% endblock %}

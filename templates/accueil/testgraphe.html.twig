@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Graphe{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Graphe Example</h1>
+        <canvas id="myChart" width="400" height="200"></canvas>
+    </div>
+
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+
+    <script>
+        // Afficher les données du graphique dans la console
+        console.log('Chart Data:', {
+            labels: {{ chartData.labels | json_encode | raw }},
+            datasets: {{ chartData.datasets | json_encode | raw }}
+        });
+
+        // Créer le graphique en utilisant Chart.js
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                label: 'My First Dataset',
+                labels: {{ chartData.labels | json_encode | raw }},
+                datasets: {{ chartData.datasets | json_encode | raw }}
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Mon Titre de Graphique'
+                },
+                indexAxis: 'x', // Afficher les barres côte à côte
+                scales: {
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        suggestedMax: 50
+                    }
+                }
+            }
+        });
+    </script>
+
+{% endblock %}

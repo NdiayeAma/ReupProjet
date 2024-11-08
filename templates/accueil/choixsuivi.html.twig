@@ -1,0 +1,69 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+        {% block content %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="card">
+                    <img src="{{ asset('images/clients3.jpg') }}"  class="card-img-top"
+                         alt="Hollywood Sign on The Hill" />
+                    <div class="card-body">
+                        <h5 class="card-title">Clients</h5>
+                        <p class="card-text">
+                            Pour gérer,ajouter ou encore modifier des clients  cliquez ici !
+                        </p>
+                        <button onclick="location.href='{{ path('admin_client') }}'" style="align-self: center; background-color: #3563AE" type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                            Consulter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="{{ asset('images/events2.jpg') }}"  class="card-img-top"
+                         alt="Hollywood Sign on The Hill" />
+                    <div class="card-body">
+                        <h5 class="card-title">Evenements</h5>
+                        <p class="card-text">
+                            Pour gérer,ajouter ou encore modifier des événements cliquer ici!
+                        </p>
+                        <button onclick="location.href='{{ path('admin_evenement') }}'"  style="align-self: center; background-color: #3563AE" type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                            Consulter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="{{ asset('images/events.jpg') }}"  class="card-img-top"
+                         alt="Hollywood Sign on The Hill" />
+                    <div class="card-body">
+                        <h5 class="card-title">Suivis</h5>
+                        <p class="card-text">
+                            Pour gérer,ajouter ou encore modifier des suivis cliquez ici
+
+                        </p>
+                        <button onclick="location.href='{{ path('admin_interfacesuivi') }}'"  style="align-self: center; background-color: #3563AE" type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                            Consulter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="{{ asset('images/synthesesuivi.jpg') }}" class="card-img-top"
+                         alt="Palm Springs Road" />
+                    <div class="card-body">
+                        <h5 class="card-title">Synthèse Suivi </h5>
+                        <p class="card-text">
+                            Pour une synthèse générale ou détaillée des matières collectées   cliquez ici !
+
+
+                        </p>
+                        <button style="align-self: center; background-color: #3563AE" onclick="location.href='{{ path('admin_suivi') }}'" type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                            Consulter
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}

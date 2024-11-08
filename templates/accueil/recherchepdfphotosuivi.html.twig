@@ -1,0 +1,124 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <head>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                var clientSelect = document.getElementById('clientSelect');
+                var siteSelect = document.getElementById('siteSelect');
+                var hallSelect = document.getElementById('hallSelect');
+                var evenementSelect = document.getElementById('evenementSelect');
+
+                clientSelect.addEventListener('change', function() {
+                    var clientId = clientSelect.value;
+                    fetch('/get_evenements_by_client/' + clientId)
+                        .then(response => response.json())
+                        .then(data => {
+                            evenementSelect.innerHTML = '';
+                            data.forEach(function (evenement) {
+                                var option = document.createElement('option');
+                                option.value = evenement.id;
+                                option.text = evenement.nom;
+                                evenementSelect.appendChild(option);
+                            });
+                            evenementSelect.dispatchEvent(new Event('change'));
+                        });
+                });
+
+                evenementSelect.addEventListener('change', function() {
+                    var evenementId = evenementSelect.value;
+                    fetch('/get_sites_by_evenement/' + evenementId)
+                        .then(response => response.json())
+                        .then(data => {
+                            siteSelect.innerHTML = '';
+                            data.forEach(function (site) {
+                                var option = document.createElement('option');
+                                option.value = site.id;
+                                option.text = site.nom;
+                                siteSelect.appendChild(option);
+                            });
+                            siteSelect.dispatchEvent(new Event('change'));
+                        });
+                });
+
+                siteSelect.addEventListener('change', function() {
+                    hallSelect.innerHTML = '';
+                    var siteId = siteSelect.value;
+                    fetch('/get_centres_by_site/' + siteId)
+                        .then(response => response.json())
+                        .then(data => {
+                            hallSelect.innerHTML = '';
+
+
+                            data.forEach(function (centre) {
+                                var option = document.createElement('option');
+                                option.value = centre.id;
+                                option.text = centre.nom;
+                                hallSelect.appendChild(option);
+                            });
+                            var option = document.createElement('option');
+                            option.value = '';
+                            option.text = 'Tous les centres de tri';
+                            hallSelect.appendChild(option);
+                            hallSelect.appendChild(option);
+                        });
+                });
+            });
+        </script>
+        <style>
+            .titre{
+                align-self: center;
+            }
+            .fieldsetcustom {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                border: 1px solid #000; /* Bordure de 2 pixels solide noire */
+                padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <form action="{{ path('app_exportpdfphotosuivifinal') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label for="clientSelect" style="font-weight: 500;">Client : </label>
+            <select id="clientSelect" name="client" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner les clients</option>
+                {% for client in clients %}
+                    <option value="{{ client.id }}">{{ client.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="evenementSelect" style="font-weight: 500;">Evénement:</label>
+            <select id="evenementSelect" name="evenement" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un événement</option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="siteSelect" style="font-weight: 500;">Site :</label>
+            <select id="siteSelect" name="site" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner le site</option>
+            </select>
+        </div>
+
+        <div id="hallSelection" class="form-group mb-3">
+            <label for="hallSelect" style="font-weight: 500;">Centre de tri :</label>
+            <select id="hallSelect" name="centredetri" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un centre de tri</option>
+            </select>
+        </div>
+    <div class="form-group mb-3">
+        <label for="start_date" style="font-weight: 500;">Date de début:</label>
+        <input type="date"  value=""  name="start_date" id="start_date" >
+    </div>
+        <div class="form-group mb-3">
+            <label for="contenantSelect" style="font-weight: 500;">Type de contenant :</label>
+            <select id="contenantSelect" name="contenant" class="form-select" aria-label="Default select example">
+                <option value="">Selectionner un type de contenant</option>
+                <option value="Benne">Benne</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Exporter</button>
+    </form>
+{% endblock %}

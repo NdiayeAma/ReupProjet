@@ -1,0 +1,145 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnExport").click(function () {
+                let table = document.getElementsByTagName("table");
+                console.log(table);
+                debugger;
+                TableToExcel.convert(table[0], {
+                    name: `suividetaille.xlsx`,
+                    sheet: {
+                        name: 'Usermanagement'
+                    }
+                });
+            });
+        });
+    </script>
+
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <th class="w-25">Centre de tri :</th>
+            <td>{{ suivicentredetri.centredetri.nom }}</td>
+        </tr>
+        <tr>
+            <th>EPI :</th>
+            <td>{{ suivicentredetri.epi }}</td>
+        </tr>
+        <tr>
+            <th>Trousse de secours :</th>
+            <td>{{ suivicentredetri.troussedesecours }}</td>
+        </tr>
+        <tr>
+            <th>Matériels de nettoyage :</th>
+            <td>{{ suivicentredetri.materielsdenettoyage }}</td>
+        </tr>
+        <tr>
+            <th>Vidoir liquide :</th>
+            <td>{{ suivicentredetri.vidoirliquide }}</td>
+        </tr>
+        <tr>
+            <th>Barrierages :</th>
+            <td>{{ suivicentredetri.barrierages }}</td>
+        </tr>
+        <tr>
+            <th>Bâches :</th>
+            <td>{{ suivicentredetri.bachenoires }}</td>
+        </tr>
+        <tr>
+            <th>Marquage au sol :</th>
+            <td>{{ suivicentredetri.marquageausol }}</td>
+        </tr>
+        <tr>
+            <th>Tonnelle :</th>
+            <td>{{ suivicentredetri.tonnelle }}</td>
+        </tr>
+        <tr>
+            <th>Signalétiques :</th>
+            <td>{{ suivicentredetri.signaletiques }}</td>
+        </tr>
+        <tr>
+            <th>Support Sachs :</th>
+            <td>{{ suivicentredetri.supportsachs }}</td>
+        </tr>
+        <tr>
+            <th>Balances :</th>
+            <td>{{ suivicentredetri.balances }}</td>
+        </tr>
+        <tr>
+            <th>Compacteur :</th>
+            <td>{{ suivicentredetri.compacteur }}</td>
+        </tr>
+        <tr>
+            <th>Table de tri :</th>
+            <td>{{ suivicentredetri.tabledetri }}</td>
+        </tr>
+        <tr>
+            <th>Bac DR 660 :</th>
+            <td>{{ suivicentredetri.bacdr660 }}</td>
+        </tr>
+        <tr>
+            <th>Bac DR 250 :</th>
+            <td>{{ suivicentredetri.bacdr240 }}</td>
+        </tr>
+        <tr>
+            <th>Bac Recycle 240 :</th>
+            <td>{{ suivicentredetri.bacrecycle240 }}</td>
+        </tr>
+        <tr>
+            <th>Bac Recycle 660 :</th>
+            <td>{{ suivicentredetri.bacrecycle660 }}</td>
+        </tr>
+        <tr>
+            <th>Bac Biodéchet 120 :</th>
+            <td>{{ suivicentredetri.bacbiodechet120 }}</td>
+        </tr>
+        <tr>
+            <th>Benne Bois :</th>
+            <td>{{ suivicentredetri.bennebois }}</td>
+        </tr>
+        <tr>
+            <th>Benne Carton :</th>
+            <td>{{ suivicentredetri.bennecarton }}</td>
+        </tr>
+        <tr>
+            <th>Benne Plastiques :</th>
+            <td>{{ suivicentredetri.benneplastiques }}</td>
+        </tr>
+
+        <tr>
+            <th>Date de soumission :</th>
+            <td>{{ suivicentredetri.datedesoumission|date('d/m/Y') }}</td>
+        </tr>
+
+        </tbody>
+    </table>
+<br>
+<div class="mb-3">
+    <label>Commentaire :</label>
+        <textarea rows="4" cols="50" class="form-control" readonly>{{ suivicentredetri.commentaire }}</textarea>
+</div>
+    <br>
+
+    <div class="mb-3">
+        <label class="form-label">Photos :</label>
+        <div class="form-control">
+            {% for photo in suivicentredetri.photos %}
+                <img src="{{ asset('uploads/' ~ photo) }}" alt="Photo" class="img-thumbnail me-2" style="max-width: 150px;">
+            {% endfor %}
+            {% if suivicentredetri.photos is empty %}
+                Aucune photo
+            {% endif %}
+        </div>
+    </div>
+<br>
+
+<div class="mb-3">
+    <button onclick="location.href='{{ path('suivicentredetricrud') }}'" class="btn btn-primary">Retour</button>
+    <button type="button" class="btn btn-primary" id="btnExport" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" >Exporter en excel
+    </button>
+    </div>
+{% endblock %}

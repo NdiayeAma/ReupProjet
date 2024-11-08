@@ -1,0 +1,135 @@
+{% extends 'baseloginsansdetection.html.twig' %}
+
+{% block body %}
+    <style>
+        .image-container {
+            max-width: 300px; /* Largeur maximale du conteneur d'image */
+            max-height: 300px; /* Hauteur maximale du conteneur d'image */
+            overflow: hidden; /* Masquer tout dépassement de contenu */
+            margin-bottom: 20px; /* Espacement en bas de chaque image */
+        }
+        .logo-container img {
+            height: 75px;
+            width: auto;
+            margin: 0 10px;
+        }
+        .header {
+            width: 100%;
+            padding: 10px;
+            background-color: white;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            margin-bottom: 10px; /* Ajustez cette valeur selon vos préférences */
+        }
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+        }
+        .thumbnail {
+            width: auto; /* Ajuster la largeur de l'image automatiquement */
+            height: auto; /* Ajuster la hauteur de l'image automatiquement */
+            max-width: 100%; /* Largeur maximale de l'image égale à la largeur du conteneur */
+            max-height: 100%; /* Hauteur maximale de l'image égale à la hauteur du conteneur */
+        }
+
+        .card {
+            border: 1px solid #000; /* Utilisation d'une bordure simple */
+            border-radius: 0.25rem; /* Coins arrondis */
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Ombre légère */
+            margin-bottom: 20px; /* Espacement en bas de chaque carte */
+            max-width: 350px; /* Limite la largeur des cartes */
+        }
+
+        .card-body {
+            padding: 1.25rem; /* Espacement intérieur du corps de la carte */
+            max-height: 200px; /* Limite la hauteur des corps de carte */
+            overflow: hidden; /* Masque tout dépassement de contenu */
+        }
+
+        .card-text {
+            word-wrap: break-word; /* Permet de couper les mots */
+            overflow-wrap: break-word; /* Permet de couper les mots */
+            max-height: 100px; /* Limite la hauteur des commentaires */
+            overflow: hidden; /* Masque tout dépassement de contenu */
+        }
+
+        .fieldsetcustom {
+            border: 2px solid #000; /* Bordure de 2 pixels solide noire */
+            padding: 10px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+            margin: 10px; /* Marge extérieure */
+        }
+
+        .table {
+            width: 100%; /* Largeur maximale du tableau */
+            border-collapse: collapse; /* Fusionner les bordures de cellules */
+        }
+
+        .table th,
+        .table td {
+            padding: 8px; /* Espacement intérieur des cellules */
+            text-align: left; /* Alignement du texte à gauche */
+            border: 1px solid #000; /* Bordure des cellules */
+            vertical-align: top; /* Aligne le contenu des cellules en haut */
+        }
+    </style>
+
+    <div class="header">
+
+        <div class="logo-container">
+            <img src="{{ base64Image }}" alt="Logo Société 1" class="logo-left">
+            <img src="{{ base64Image3 }}" alt="Logo Société 3" class="logo-center">
+            <img src="{{ base64Image2 }}" alt="Logo Société 2" class="logo-right">
+        </div>
+        <h1>SOUTH PARIS ARENA</h1>
+        <h3>Reporting du {{ datedujour }}</h3>
+        <div>
+
+
+        </div>
+    </div>
+    <div class="container">
+
+        {% for centreDetri, photos in photosByCentreDetri %}
+            <h2 style="text-align: center">{{ centreDetri }}</h2>
+            <div class="fieldsetcustom">
+                <table class="table">
+                    <tbody>
+                    {% for photoData in photos %}
+                        {% if loop.index0 % 3 == 0 %}
+                            <tr>
+                        {% endif %}
+                        <td>
+                            <div class="card">
+                                <div class="image-container">
+                                    <img src="{{ photoData['base64String'] }}" class="card-img-top thumbnail" alt="Image">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ photoData['objetPhoto'].getTitre() }}</h5>
+                                    <p>Commentaire :</p>
+                                    <p class="card-text">{{ photoData['objetPhoto'].getCommentaire() }}</p>
+                                    <!-- Ajoutez d'autres propriétés de l'objet Photo selon vos besoins -->
+                                </div>
+                            </div>
+                        </td>
+                        {% if loop.index0 % 3 == 2 %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    {% if loop.index0 % 3 != 0 %}
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if photosByCentreDetri is empty %}
+        <p class="text-center mt-4">Aucune photo pour ce centre de tri</p>
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,212 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block title %}Formulaire creation client{% endblock %}
+
+{% block content %}
+
+
+    <form action="creationevenement" method="post" enctype="multipart/form-data" id="siteForm" >
+ <br>
+        <div class="form-group mb-3">
+            <label for="nomevenement">Nom de l'événement:</label>
+            <input type="text" placeholder="Entre le nom du client" class="form-control"  name="nomevenement" id="nomevenement" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="clientSelect" >Client :</label>
+            <select id="clientSelect" name="client" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un client</option>
+                {% for client in clients %}
+                    <option value="{{ client.id }}">{{ client.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <div class="form-group mb-3">
+                    <label  for="siteSelect">Sites existants :</label>
+                <select id="siteSelect" name="site" class="form-select" aria-label="Default select example">
+                    <option value="">Sélectionner un site</option>
+                    {% for site in sites %}
+                        <option value="{{ site.id }}">{{ site.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" id="addSiteButton">Ajouter un Site inexistant</button>
+
+            <label for="hallsContainer" hidden="hidden">Liste des Halls à cocher :</label>
+            <div id="hallsContainer" class="form-check form-switch" >
+
+                <!-- Les cases à cocher des halls seront ajoutées ici -->
+
+            </div>
+
+
+            <div id="sitesContainer">
+                <!-- Les champs de saisie pour les sites seront ajoutés ici -->
+            </div>
+            <hr>
+            <div class="form-group mb-3">
+
+                <label for="datedebut">Date de début de l'évenement :</label>
+                <input type="date" name="datedebut" id="datedebut" class="form-control" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="datefin">Date de fin de l'évenement : </label>
+                <input type="date" name="datefin" id="datefin" class="form-control" required>
+            </div>
+
+            <div class="form-group mb-3">
+
+            <label for="montageDebut">Date de début montage :</label>
+            <input type="date" name="montageDebut" id="montageDebut" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="montageFin">Date de fin montage : </label>
+            <input type="date" name="montageFin" id="montageFin" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+        <label for="exploitationDebut">Date de début d'exploitation  :</label>
+        <input type="date" name="exploitationDebut" id="exploitationDebut" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="exploitationFin">Date de fin d'exploitation : </label>
+            <input type="date" name="exploitationFin" id="exploitationFin" class="form-control" required>
+        </div>
+
+            <div class="form-group mb-3">
+                <label for="demontageDebut">Date début   démontage   :</label>
+                <input type="date" name="demontageDebut" id="demontageDebut" class="form-control" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="demontageFin">Date fin  démontage  : </label>
+                <input type="date" name="demontageFin" id="demontageFin" class="form-control" required>
+            </div>
+
+
+
+
+
+            <button type="submit">Soumettre</button>
+    </form>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var siteForm = document.getElementById('siteForm');
+            var sitesContainer = document.getElementById('sitesContainer');
+            var addSiteButton = document.getElementById('addSiteButton');
+
+            var siteIndex = 0;
+
+            addSiteButton.addEventListener('click', function() {
+                siteIndex++;
+
+                var siteLabel = document.createElement('label');
+                siteLabel.textContent = 'Site ' + siteIndex + ': ';
+
+                var siteInput = document.createElement('input');
+                siteInput.type = 'text';
+                siteInput.name = 'site_' + siteIndex;
+                siteInput.required = true;
+
+                var hallNumberLabel = document.createElement('label');
+                hallNumberLabel.textContent = 'Nombre de halls pour le site ' + siteIndex + ': ';
+
+                var hallNumberInput = document.createElement('input');
+                hallNumberInput.type = 'number';
+                hallNumberInput.min = '1';
+                hallNumberInput.name = 'hallNumber_' + siteIndex;
+                hallNumberInput.required = true;
+
+                var hallContainer = document.createElement('div');
+                hallContainer.id = 'site_' + siteIndex + '_halls';
+
+                hallNumberInput.addEventListener('input', function() {
+                    var numberOfHalls = parseInt(hallNumberInput.value);
+                    hallContainer.innerHTML = '';
+
+                    for (var j = 1; j <= numberOfHalls; j++) {
+                        var hallLabel = document.createElement('label');
+                        hallLabel.textContent = 'Hall ' + j + ': ';
+
+                        var hallInput = document.createElement('input');
+                        hallInput.type = 'text';
+                        hallInput.name = 'sitehall_' + siteIndex + '_hall_' + j;
+                        hallInput.required = true;
+
+                        hallContainer.appendChild(hallLabel);
+                        hallContainer.appendChild(hallInput);
+                        hallContainer.appendChild(document.createElement('br'));
+                    }
+                });
+
+                var lineBreak = document.createElement('br');
+
+                sitesContainer.appendChild(siteLabel);
+                sitesContainer.appendChild(siteInput);
+                sitesContainer.appendChild(document.createElement('br'));
+                sitesContainer.appendChild(hallNumberLabel);
+                sitesContainer.appendChild(hallNumberInput);
+                sitesContainer.appendChild(lineBreak);
+                sitesContainer.appendChild(hallContainer);
+                sitesContainer.appendChild(document.createElement('br'));
+            });
+        });
+    </script>
+    <script type="text/javascript">
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionnez les éléments du formulaire
+            var siteSelect = document.getElementById('siteSelect');
+            var hallsContainer = document.getElementById('hallsContainer');
+
+            // Écoutez les changements dans le menu déroulant du site
+            siteSelect.addEventListener('change', function() {
+                // Récupérez l'ID du site sélectionné
+                hallsContainer.innerHTML = '';
+                var siteId = siteSelect.value;
+
+                // Envoyez une requête AJAX pour récupérer les halls correspondants au site
+                fetch('/get_halls_by_site/' + siteId)
+                    .then(response => response.json())
+                    .then(data =>   {
+
+                        var labelelementacocher = document.createElement('label');
+                        labelelementacocher.textContent = 'Liste des halls à cocher :'
+                        hallsContainer.appendChild(labelelementacocher);
+
+                        // Ajoutez les nouvelles options du menu déroulant des halls
+                        data.forEach(function (hall) {
+                            var div = document.createElement('div');
+                            div.className = 'form-check form-switch';
+
+                            var checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.className = 'form-check-input';
+                            checkbox.name = 'halls[]';
+                            checkbox.value = hall.id;
+                            checkbox.id = 'hall_' + hall.id;
+
+                            var label = document.createElement('label');
+                            label.className = 'form-check-label';
+                            label.htmlFor = 'hall_' + hall.id;
+                            label.appendChild(document.createTextNode(hall.nom));
+
+                            div.appendChild(checkbox);
+                            div.appendChild(label);
+
+                            hallsContainer.appendChild(div);
+                        });
+
+
+                    });
+            });
+        });
+    </script>
+{% endblock %}

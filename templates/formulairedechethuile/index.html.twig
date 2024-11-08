@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulairedechethuile index{% endblock %}
+
+{% block body %}
+    <h3> Liste des Formulaires de biodéchets et de bidons d'huile  </h3>
+    <a href="{{ path('app_formulairedechethuile_new') }}" class="btn btn-dark me-3" style="float: right">Ajouter un nouveau formulaire</a>
+
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom du hall</th>
+                <th>Allée</th>
+                <th>Nombre de sacs</th>
+                <th>Quantité des sacs(en litres)</th>
+                <th>Nombre de bidons</th>
+                <th>Commentaire</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for formulairedechethuile in formulairedechethuiles %}
+            <tr>
+                <td>{{ formulairedechethuile.id }}</td>
+                <td>{{ formulairedechethuile.nomhall }}</td>
+                <td>{{ formulairedechethuile.allee }}</td>
+                <td>{{ formulairedechethuile.nombredesacs }}</td>
+                <td>{{ formulairedechethuile.quantitesacs }}</td>
+                <td>{{ formulairedechethuile.nombredebidons }}</td>
+                <td>{{ formulairedechethuile.commentaire | u.truncate(10,' ...',false) | markdown | raw }} </td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('app_formulairedechethuile_show', {'id': formulairedechethuile.id}) }}">Consulter</a>
+                    <a class="btn btn-primary" href="{{ path('app_formulairedechethuile_edit', {'id': formulairedechethuile.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">Aucun formulaire pour le moment</td>
+            </tr>
+        {% endfor %}
+        <div class="container" style="padding-top: 10px">
+            <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {{ knp_pagination_render(formulairedechethuiles,'twitter_bootstrap_v4_pagination.html.twig') }}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        </tbody>
+    </table>
+
+{% endblock %}

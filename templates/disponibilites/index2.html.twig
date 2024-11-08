@@ -1,0 +1,222 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Disponibilités{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #calendrier {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .modal-dialog {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        a {
+            text-decoration: none;
+        }
+        /* Ajout de styles pour les petits écrans */
+        @media (max-width: 768px) {
+            #calendrier {
+                padding: 10px;
+            }
+            .fc-toolbar {
+                flex-wrap: wrap;
+            }
+            .fc-toolbar .fc-left,
+            .fc-toolbar .fc-center,
+            .fc-toolbar .fc-right {
+                display: block;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let calendarInstance;
+            let selectedDates = [];
+            let currentEvent;
+
+            let calendarElt = document.querySelector("#calendrier");
+            calendarInstance = new FullCalendar.Calendar(calendarElt, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                timeZone: 'Europe/Paris',
+                headerToolbar: {
+                    start: 'prev,next today',
+                    center: 'title',
+                    end: 'dayGridMonth,timeGridWeek'
+                },
+                editable: true,
+                selectable: true,
+                select: function(info) {
+                    handleDateSelection(info);
+                },
+                eventClick: function(info) {
+                    currentEvent = info.event;
+                    showEventForm([info.event.startStr.split('T')[0]], info.event.startStr, info.event.endStr, true);
+                },
+                events: {{ data|raw }},
+                timeFormat: 'H:mm',
+            });
+
+            calendarInstance.render();
+
+            function handleDateSelection(info) {
+                selectedDates = [];
+                let start = info.startStr.split('T')[0];
+                let end = info.endStr.split('T')[0];
+                let currentDate = new Date(start);
+
+                while (currentDate <= new Date(end)) {
+                    selectedDates.push(currentDate.toISOString().split('T')[0]);
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                showEventForm(selectedDates);
+            }
+
+            function showEventForm(dates, startDate = null, endDate = null, isEdit = false) {
+                const eventModal = new bootstrap.Modal(document.getElementById('eventModal'), {});
+                eventModal.show();
+
+                const dateList = document.getElementById('eventDateList');
+                dateList.innerHTML = ''; // Clear previous entries
+                dates.forEach(date => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = date;
+                    dateList.appendChild(listItem);
+                });
+
+                document.getElementById('startTime').value = startDate ? startDate.split('T')[1].slice(0, 5) : '';
+                document.getElementById('endTime').value = endDate ? endDate.split('T')[1].slice(0, 5) : '';
+                document.getElementById('eventSubmit').textContent = isEdit ? 'Modifier' : 'Ajouter';
+                document.getElementById('deleteEvent').style.display = isEdit ? 'block' : 'none';
+            }
+
+            document.getElementById('eventForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                let startTime = document.getElementById('startTime').value;
+                let endTime = document.getElementById('endTime').value;
+
+                if (currentEvent) {
+                    let startDateTime = currentEvent.startStr.split('T')[0] + 'T' + startTime + ':00';
+                    let endDateTime = currentEvent.endStr.split('T')[0] + 'T' + endTime + ':00';
+
+                    currentEvent.setStart(startDateTime);
+                    currentEvent.setEnd(endDateTime);
+
+                    fetch(`/disponibilite/update-disponibilite/${currentEvent.id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token('update-disponibilite') }}'
+                        },
+                        body: JSON.stringify({ debut: startDateTime, fin: endDateTime })
+                    }).then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const eventModal = bootstrap.Modal.getInstance(document.getElementById('eventModal'));
+                                eventModal.hide();
+                            } else {
+                                console.error('Erreur lors de la mise à jour de la disponibilité');
+                            }
+                        });
+                } else {
+                    if (selectedDates.length > 0) {
+                        selectedDates.forEach(date => {
+                            let startDateTime = date + 'T' + startTime + ':00';
+                            let endDateTime = date + 'T' + endTime + ':00';
+
+                            fetch('/add-disponibilite', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token('add-disponibilite') }}'
+                                },
+                                body: JSON.stringify({ debut: startDateTime, fin: endDateTime })
+                            }).then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        calendarInstance.addEvent({ id: data.id, title: 'Nouvel événement', start: startDateTime, end: endDateTime });
+                                    } else {
+                                        console.error('Erreur lors de l\'ajout de la disponibilité');
+                                    }
+                                });
+                        });
+                        const eventModal = bootstrap.Modal.getInstance(document.getElementById('eventModal'));
+                        eventModal.hide();
+                        selectedDates = []; // Clear selected dates after submission
+                    }
+                }
+            });
+
+            document.getElementById('deleteEvent').addEventListener('click', function() {
+                if (!currentEvent) return;
+
+                fetch(`/disponibilite/delete-disponibilite/${currentEvent.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token('delete-disponibilite') }}'
+                    }
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            currentEvent.remove();
+                            const eventModal = bootstrap.Modal.getInstance(document.getElementById('eventModal'));
+                            eventModal.hide();
+                        } else {
+                            console.error('Erreur lors de la suppression de la disponibilité');
+                        }
+                    });
+            });
+
+            document.getElementById('eventModal').addEventListener('hidden.bs.modal', function () {
+                document.getElementById('eventForm').reset();
+                selectedDates = [];
+                currentEvent = null;
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div id="calendrier"></div>
+
+    <!-- Modal Bootstrap pour ajouter/modifier une disponibilité -->
+    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Ajouter / Modifier une disponibilité</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <ul id="eventDateList"></ul>
+                        <div class="mb-3">
+                            <label for="startTime" class="form-label">Heure de début</label>
+                            <input type="time" class="form-control" id="startTime" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="endTime" class="form-label">Heure de fin</label>
+                            <input type="time" class="form-control" id="endTime" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="eventSubmit">Ajouter</button>
+                        <button type="button" class="btn btn-danger" id="deleteEvent" style="display:none;">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+
+
+{% block content %}
+
+    <head xmlns="http://www.w3.org/1999/html">
+        <style>
+            .titre{
+                align-self: center;
+            }
+            .fieldsetcustom {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                border: 2px solid #000; /* Bordure de 2 pixels solide noire */
+                padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+            }
+        </style>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // Sélectionnez les éléments du formulaire
+                var clientSelect = document.getElementById('clientSelect');
+                var siteSelect = document.getElementById('siteSelect');
+                var hallSelect = document.getElementById('hallSelect');
+                var evenementSelect = document.getElementById('evenementSelect');
+                var titresuivi = document.getElementById('titresuivi');
+                // Écoutez les changements dans le menu déroulant du client
+
+                var choixSelect = document.getElementById('choixcontenant');
+                var autreChoixInput = document.getElementById('autrechoixcontenant');
+                var choixvolume = document.getElementById('choixvolume');
+                var choixautrevolume = document.getElementById('autrechoixvolume');
+
+                var inputautrechoixscontenantlabel = document.createElement('label');
+                inputautrechoixscontenantlabel.textContent = 'Autre nom de contenant :';
+                var labelautrevolume = document.createElement('label');
+                labelautrevolume.textContent = 'Autre volume  :';
+
+                var inputautrechoixscontenant = document.createElement('input')
+                inputautrechoixscontenant.setAttribute('type', 'text');
+                inputautrechoixscontenant.setAttribute('name', 'autrenomcontenant');
+                inputautrechoixscontenant.setAttribute('required', 'required');
+
+                var autrechoixvolume = document.createElement('input')
+                autrechoixvolume.setAttribute('type', 'number');
+                autrechoixvolume.setAttribute('name', 'autrechoixvolume');
+                autrechoixvolume.setAttribute('required', 'required');
+
+                choixvolume.addEventListener('change', function() {
+                    if (choixvolume.value === 'autre') {
+
+                        choixautrevolume.appendChild(labelautrevolume);
+                        choixautrevolume.appendChild(autrechoixvolume);
+                    } else {
+                        choixautrevolume.removeChild(labelautrevolume);
+                        choixautrevolume.removeChild(autrechoixvolume);
+                    }});
+
+                choixSelect.addEventListener('change', function() {
+                    if (choixSelect.value === 'autre') {
+                        autreChoixInput.appendChild(inputautrechoixscontenantlabel);
+
+                        autreChoixInput.appendChild(inputautrechoixscontenant);
+                    } else {
+                        autreChoixInput.removeChild(inputautrechoixscontenantlabel);
+
+                        autreChoixInput.removeChild(inputautrechoixscontenant);
+                    }});
+
+                evenementSelect.addEventListener('change', function() {
+                    // Récupérez l'ID du client sélectionné
+                    var evenementId = evenementSelect.value;
+
+                    if(evenementId === ''){
+                        siteSelect.innerHTML = '';
+                        var option = document.createElement('option');
+                        option.value = '';
+                        option.text = 'Aucun site pour cet événement';
+                        siteSelect.appendChild(option);
+                        siteSelect.dispatchEvent(new Event('change'));
+
+                    }
+                    else {
+                        fetch('/get_sites_by_evenement/' + evenementId)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Effacez les options actuelles du menu déroulant des sites
+                                siteSelect.innerHTML = '';
+
+                                // Ajoutez les nouvelles options du menu déroulant des sites
+                                data.forEach(function (site) {
+                                    var option = document.createElement('option');
+                                    option.value = site.id;
+                                    option.text = site.nom;
+                                    siteSelect.appendChild(option);
+                                });
+
+                                // Une fois les sites chargés, déclenchez manuellement l'événement "change" pour mettre à jour les halls
+                                siteSelect.dispatchEvent(new Event('change'));
+                            });
+                    }
+                });
+
+                clientSelect.addEventListener('change', function() {
+                    // Récupérez l'ID du client sélectionné
+                    var clientId = clientSelect.value;
+
+                    if(clientId === ''){
+                        evenementSelect.innerHTML = '';
+                        var option = document.createElement('option');
+                        option.value = '';
+                        option.text = 'Aucun évévenement pour ce client';
+                        evenementSelect.appendChild(option);
+                        evenementSelect.dispatchEvent(new Event('change'));
+
+                    }
+                    else {
+                        // Envoyez une requête AJAX pour récupérer les sites correspondants au client
+                        fetch('/get_evenements_by_client/' + clientId)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Effacez les options actuelles du menu déroulant des sites
+                                evenementSelect.innerHTML = '';
+
+                                // Ajoutez les nouvelles options du menu déroulant des sites
+                                data.forEach(function (evenement) {
+                                    var option = document.createElement('option');
+                                    option.value = evenement.id;
+                                    option.text = evenement.nom;
+                                    evenementSelect.appendChild(option);
+                                });
+
+                                // Une fois les sites chargés, déclenchez manuellement l'événement "change" pour mettre à jour les halls
+                                evenementSelect.dispatchEvent(new Event('change'));
+                            });
+                    }
+                });
+
+                // Écoutez les changements dans le menu déroulant du site
+                siteSelect.addEventListener('change', function() {
+                    // Récupérez l'ID du site sélectionné
+                    hallSelect.innerHTML = '';
+                    var siteId = siteSelect.value;
+
+                    if (siteId === '') {
+                        hallSelect.innerHTML = '';
+                        var option = document.createElement('option');
+                        option.value = '';
+                        option.text = 'Aucune zone pour ce site';
+                        hallSelect.appendChild(option);
+                        hallSelect.dispatchEvent(new Event('change'));
+
+                    }else {
+
+                        // Envoyez une requête AJAX pour récupérer les halls correspondants au site
+                        fetch('/get_halls_by_site/' + siteId)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Effacez les options actuelles du menu déroulant des halls
+                                hallSelect.innerHTML = '';
+
+                                // Ajoutez les nouvelles options du menu déroulant des halls
+                                data.forEach(function (hall) {
+                                    var option = document.createElement('option');
+                                    option.value = hall.id;
+                                    option.text = hall.nom;
+                                    hallSelect.appendChild(option);
+                                });
+
+                            });
+                    }
+                });
+
+
+
+            });
+
+        </script>
+        <script>
+
+        </script>
+        <style>
+
+        </style>
+    </head>
+
+
+
+
+
+
+    <form action="/submit-photo-suivi-form" method="post" enctype="multipart/form-data">
+       <input name="idsuivi" value="{{ suivi.id }}" type="hidden">
+
+        <div>
+            <label for="photo">Sélectionnez une photo :</label>
+            <input type="file" id="photo" name="photo[]" class="form-control-file" multiple>
+        </div>
+
+        <hr>
+
+        <button type="submit" class="btn btn-primary">Soumettre</button>
+    </form>
+
+
+
+{% endblock %}

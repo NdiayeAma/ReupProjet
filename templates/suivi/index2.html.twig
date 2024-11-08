@@ -1,0 +1,376 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+
+
+{% block content %}
+
+    <head xmlns="http://www.w3.org/1999/html">
+        <style>
+            .titre{
+                align-self: center;
+            }
+            .fieldsetcustom {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                border: 2px solid #000; /* Bordure de 2 pixels solide noire */
+                padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+            }
+        </style>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // Sélectionnez les éléments du formulaire
+                var clientSelect = document.getElementById('clientSelect');
+                var siteSelect = document.getElementById('siteSelect');
+                var hallSelect = document.getElementById('hallSelect');
+                var evenementSelect = document.getElementById('evenementSelect');
+                var titresuivi = document.getElementById('titresuivi');
+                // Écoutez les changements dans le menu déroulant du client
+
+                var choixSelect = document.getElementById('choixcontenant');
+                var autreChoixInput = document.getElementById('autrechoixcontenant');
+                var choixvolume = document.getElementById('choixvolume');
+                var choixautrevolume = document.getElementById('autrechoixvolume');
+
+                var inputautrechoixscontenantlabel = document.createElement('label');
+                inputautrechoixscontenantlabel.textContent = 'Autre nom de contenant :';
+                var labelautrevolume = document.createElement('label');
+                labelautrevolume.textContent = 'Autre volume  :';
+
+                var inputautrechoixscontenant = document.createElement('input')
+                inputautrechoixscontenant.setAttribute('type', 'text');
+                inputautrechoixscontenant.setAttribute('name', 'autrenomcontenant');
+                inputautrechoixscontenant.setAttribute('required', 'required');
+
+                var autrechoixvolume = document.createElement('input')
+                autrechoixvolume.setAttribute('type', 'number');
+                autrechoixvolume.setAttribute('name', 'autrechoixvolume');
+                autrechoixvolume.setAttribute('required', 'required');
+
+                choixvolume.addEventListener('change', function() {
+                    if (choixvolume.value === 'autre') {
+
+                        choixautrevolume.appendChild(labelautrevolume);
+                        choixautrevolume.appendChild(autrechoixvolume);
+                    } else {
+                        choixautrevolume.removeChild(labelautrevolume);
+                        choixautrevolume.removeChild(autrechoixvolume);
+                    }});
+
+                choixSelect.addEventListener('change', function() {
+                    if (choixSelect.value === 'autre') {
+                        autreChoixInput.appendChild(inputautrechoixscontenantlabel);
+
+                        autreChoixInput.appendChild(inputautrechoixscontenant);
+                    } else {
+                        autreChoixInput.removeChild(inputautrechoixscontenantlabel);
+
+                        autreChoixInput.removeChild(inputautrechoixscontenant);
+                }});
+
+                evenementSelect.addEventListener('change', function() {
+                    // Récupérez l'ID du client sélectionné
+                    var evenementId = evenementSelect.value;
+
+                    if(evenementId === ''){
+                        siteSelect.innerHTML = '';
+                        var option = document.createElement('option');
+                        option.value = '';
+                        option.text = 'Aucun site pour cet événement';
+                        siteSelect.appendChild(option);
+                        siteSelect.dispatchEvent(new Event('change'));
+
+                    }
+                    else {
+                        fetch('/get_sites_by_evenement/' + evenementId)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Effacez les options actuelles du menu déroulant des sites
+                                siteSelect.innerHTML = '';
+
+                                // Ajoutez les nouvelles options du menu déroulant des sites
+                                data.forEach(function (site) {
+                                    var option = document.createElement('option');
+                                    option.value = site.id;
+                                    option.text = site.nom;
+                                    siteSelect.appendChild(option);
+                                });
+
+                                // Une fois les sites chargés, déclenchez manuellement l'événement "change" pour mettre à jour les halls
+                                siteSelect.dispatchEvent(new Event('change'));
+                            });
+                    }
+                });
+
+                clientSelect.addEventListener('change', function() {
+                    // Récupérez l'ID du client sélectionné
+                    var clientId = clientSelect.value;
+
+                    if(clientId === ''){
+                        evenementSelect.innerHTML = '';
+                        var option = document.createElement('option');
+                        option.value = '';
+                        option.text = 'Aucun évévenement pour ce client';
+                        evenementSelect.appendChild(option);
+                        evenementSelect.dispatchEvent(new Event('change'));
+
+                    }
+                    else {
+                        // Envoyez une requête AJAX pour récupérer les sites correspondants au client
+                        fetch('/get_evenements_by_client/' + clientId)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Effacez les options actuelles du menu déroulant des sites
+                                evenementSelect.innerHTML = '';
+
+                                // Ajoutez les nouvelles options du menu déroulant des sites
+                                data.forEach(function (evenement) {
+                                    var option = document.createElement('option');
+                                    option.value = evenement.id;
+                                    option.text = evenement.nom;
+                                    evenementSelect.appendChild(option);
+                                });
+
+                                // Une fois les sites chargés, déclenchez manuellement l'événement "change" pour mettre à jour les halls
+                                evenementSelect.dispatchEvent(new Event('change'));
+                            });
+                    }
+                });
+
+                // Écoutez les changements dans le menu déroulant du site
+                siteSelect.addEventListener('change', function() {
+                    // Récupérez l'ID du site sélectionné
+                    hallSelect.innerHTML = '';
+                    var siteId = siteSelect.value;
+
+                    if (siteId === '') {
+                        hallSelect.innerHTML = '';
+                        var option = document.createElement('option');
+                        option.value = '';
+                        option.text = 'Selectionnez un centre de tri';
+                        hallSelect.appendChild(option);
+                        hallSelect.dispatchEvent(new Event('change'));
+
+                    }else {
+
+                    // Envoyez une requête AJAX pour récupérer les halls correspondants au site
+                    fetch('/get_centres_by_site/' + siteId)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Effacez les options actuelles du menu déroulant des halls
+                            hallSelect.innerHTML = '';
+
+                            // Ajoutez les nouvelles options du menu déroulant des halls
+                            data.forEach(function (centre) {
+                                var option = document.createElement('option');
+                                option.value = centre.id;
+                                option.text = centre.nom;
+                                hallSelect.appendChild(option);
+                            });
+
+                        });
+                }
+                });
+
+
+
+            });
+
+        </script>
+
+
+        <style>
+
+        </style>
+    </head>
+
+
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" data-timeout="5000" >
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <script type="text/javascript">
+        const alerts = document.querySelectorAll('[class*="alert-"]')
+        for (const alert of alerts) {
+            setTimeout( function() {
+                const bootstrapAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                bootstrapAlert.close();
+            }, 5000);
+        }
+
+    </script>
+
+    <form action="submit-suivi-form" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="clientSelect" ><strong>Client :<strong/> </label>
+            <select id="clientSelect" name="client" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un client</option>
+                {% for client in clients %}
+                    <option value="{{ client.id }}">{{ client.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <hr>
+        <div>
+            <label for="evennementSelect" > <strong>Evenements :<strong/> </label>
+            <select id="evenementSelect" name="evenement" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un événement</option>
+            </select>
+        </div>
+        <hr>
+
+        <div>
+            <label for="siteSelect">Site :</label>
+            <select id="siteSelect" name="site" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un site</option>
+            </select>
+        </div>
+
+
+        <div id="hallSelection">
+            <label for="hallSelect">Centre de tri :</label>
+            <select id="hallSelect" name="centredetri" class="form-select" aria-label="Default select example" required>
+                <option value="">Sélectionner un Centre de tri </option>
+            </select>
+        </div>
+        <p></p>
+
+        {% for i in range(1, 1) %}
+            <fieldset class="fieldsetcustom" >
+                <h2 class="titre">Formulaire de suivi</h2>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="flux">Déchet:</label>
+                        <select class="form-select" name="suivi[{{ i }}][flux]" required>
+                            <option value="">Sélectionner un type de déchet </option>
+                            <option value="DR">DR</option>
+                            <option value="Canettes">Recyclable</option>
+                            <option value="Bois">Bois</option>
+                            <option value="Carton">Carton</option>
+                            <option value="Plastique souple">Plastique souple</option>
+                            <option value="PET">PET</option>
+                            <option value="Canettes">Canettes</option>
+                            <option value="Verre">Verre</option>
+                            <option value="Moquette">Moquette</option>
+                            <option value="Biodechet">Biodechet</option>
+                            <option value="D3EDEEE">D3E/DEEE</option>
+                            <option value="Déchets dangereux">Déchets dangereux</option>
+                            <option value="Catalogues et journaux">Catalogues et journaux</option>
+                            <option value="Déchets médicaux">Déchets médicaux</option>
+                            <option value="Huiles usagées">Huiles usagées</option>
+                            <option value="Bâche">Bâche</option>
+                            <option value="Mobilier">Mobilier</option>
+
+
+                        </select>
+                    </div>
+                    <div class="form-group col">
+                        <label for="typedecontenant">Type de matériel:</label>
+                        <select class="form-select" type="text" id="choixcontenant" name="suivi[{{ i }}][typedecontenant]"  aria-label="Default select example" required >
+
+                                <option value="Bac">Bac</option>
+                                <option value="Sache">Sache</option>
+                            <option value="Benne">Benne</option>
+                            <option value="Caisse palette">Caisse palette</option>
+                                <option value="Bidon">Bidon</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        <div id="autrechoixcontenant"></div>
+                    </div>
+                    <div class="form-group col">
+                        <label for="volumecontenant">Volume (L):</label>
+                        <select type="number"  class="form-select" id="choixvolume" name="suivi[{{ i }}][volumecontenant]"  aria-label="Default select example"  required >
+                                <option value="660">660 L</option>
+                                <option value="340">340 L</option>
+                                <option value="240">240 L</option>
+                                <option value="50">50 L</option>
+                                <option value="autre">Autre</option>
+                            </select>
+
+                        <div id="autrechoixvolume"></div>
+
+                    </div>
+                    <div class="form-group col">
+                        <label for="poids">Poids (Kg):</label>
+                        <input type="number"  step="any" name="suivi[{{ i }}][poids]" class="form-control"  />
+                    </div>
+                    <div class="form-group col" hidden="">
+                        <label for="tauxderemplissage">Taux remplissage (%):</label>
+                        <select value="0" name="suivi[{{ i }}][tauxderemplissage]" class="form-control" required>
+                            <option value="0">0%</option>
+                            <option value="25">25%</option>
+                            <option value="50">50%</option>
+                            <option value="75">75%</option>
+                            <option value="100">100%</option>
+                        </select>
+                    </div>
+                    <div class="form-group col">
+                        <label for="collecte">Nombre de contenants:</label>
+                        <input type="number" value="0" name="suivi[{{ i }}][collecte]" class="form-control"  />
+                        <small id="emailHelp" class="form-text text-muted">Exemple:Nombre de bacs,sachs,bennes...</small>
+
+                    </div>
+
+                    <div class="form-group col" hidden="hidden">
+                        <label for="cumul">Cumul bacs:</label>
+                        <input type="number" name="suivi[{{ i }}][cumul]" class="form-control"  />
+                    </div>
+                    <div class="form-group col">
+                        <label for="qualitedutribennes"> Qualité du tri :</label>
+                        <select type="text" name="suivi[{{ i }}][qualitedutribennes]" class="form-select" aria-label="Default select example" required >
+                        <option value="Mauvais">Mauvais</option>
+                        <option value="Bien">Bien</option>
+                        <option value="Trés bien">Trés bien</option>
+
+                    </select>
+                    </div>
+                    <div class="form-group col" hidden="">
+                        <label for="estimatifbennes">Estimatif bennes (%):</label>
+                        <select value="0" name="suivi[{{ i }}][estimatifbennes]" class="form-control" required>
+                            <option value="0">0%</option>
+                            <option value="25">25%</option>
+                            <option value="50">50%</option>
+                            <option value="75">75%</option>
+                            <option value="100">100%</option>
+                        </select>
+                    </div>
+                    <div class="form-group col" hidden="">
+                        <label for="collectebennes" >Collecte bennes:</label>
+                        <select value="none" name="suivi[{{ i }}][collectebennes]" class="form-control" required>
+                            <option value="oui">Oui</option>
+                            <option value="non">Non</option>
+                        </select>
+                    </div>
+                    <div class="form-group col" hidden="hidden" hidden="">
+                        <label for="cumulbennes">Cumul bennes:</label>
+                        <input value="0" type="number" name="suivi[{{ i }}][cumulbennes]" class="form-control" />
+                    </div>
+                </div>
+            </fieldset>
+        {% endfor %}
+
+        <hr>
+
+        <div>
+            <label for="commentaire">Commentaire :</label>
+            <textarea  id="commentaire" name="commentaire" rows="4" cols="50" class="form-control"></textarea>
+        </div>
+
+        <hr>
+
+        <div>
+            <label for="photo">Sélectionnez une photo :</label>
+            <input type="file" id="photo" name="photo[]" class="form-control-file" multiple>
+        </div>
+
+        <hr>
+
+        <button type="submit" class="btn btn-primary">Soumettre</button>
+    </form>
+
+
+
+{% endblock %}

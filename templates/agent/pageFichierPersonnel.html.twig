@@ -1,0 +1,83 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+
+    <title>Formulaire de Collecte d'Informations Personnelles</title>
+
+    <style>
+        .invalid {
+            border-color: red;
+        }
+    </style>
+
+
+<body>
+    <form method="post" action="{{ path('app_submit_donnees_agent') }}" enctype="multipart/form-data">
+        <h1>Informations Personnelles</h1>
+        <input type="text" id="id" name="id"  value="{{ app.user.id }}" class="form-control" hidden="hidden"><br>
+        <label for="nom">Nom :</label>
+        <input type="text" id="nom" name="nom"  class="form-control" ><br>
+
+        <label for="prenom">Prénom :</label>
+        <input type="text" id="prenom" name="prenom"  class="form-control" ><br>
+
+        <label for="datedenaissance">Date de naissance:</label>
+        <input type="date" name="datedenaissance" id="datedenaissance" class="form-control" ><br>
+
+        <label for="prenom">Lieu de naisance :</label>
+        <input type="text" id="lieudenaissance" name="lieudenaissance"  class="form-control" ><br>
+
+        <label for="adresse">Adresse :</label>
+        <input type="text" id="adresse" name="adresse"  class="form-control" ><br>
+
+        <label for="contact_urgence_tel">Numéro de téléphone :</label>
+        <input type="text" id="contact" name="contact" pattern="[0-9]{10}" title="Le numéro de téléphone doit comporter 10 chiffres"   class="form-control"  oninvalid=""><br>
+
+
+        <label for="rib">RIB :</label>
+        <input type="file" id="rib" name="rib" pattern="[a-zA-Z0-9]{27}" title="Le RIB doit comporter 27 caractères alphanumériques"  class="form-control" ><br>
+
+        <label for="siren">N° SIRET :</label>
+        <input type="text" id="siret" name="siret" pattern="[0-9]{14}" title="Le SIRET doit comporter 9 chiffres" class="form-control" ><br>
+
+        <label for="securite_sociale">N° Sécurité Sociale :</label>
+        <input type="text" id="securite_sociale" name="securite_sociale" pattern="[0-9]{15}" title="Le numéro de sécurité sociale doit comporter exactement 15 chiffres"  class="form-control" ><br>
+
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Veuillez saisir une adresse email valide"  class="form-control" ><br>
+
+        <label for="contact_urgence">Personne à contacter en cas d'urgence :</label>
+        <input type="text" id="contact_urgence" name="contact_urgence"  class="form-control" ><br>
+
+        <label for="contact_urgence_tel">Numéro de téléphone du contact d'urgence :</label>
+        <input type="text" id="contact_urgence_tel" name="contact_urgence_tel" pattern="[0-9]{10}" title="Le numéro de téléphone doit comporter 10 chiffres" class="form-control" ><br>
+
+
+        <label for="photo">Photo :</label>
+        <input type="file" id="photo" name="photo" class="form-control"><br>
+
+        <label for="permis">Permis de conduire :</label>
+        <input type="file" id="permis" name="permis"   class="form-control"><br>
+
+        <label for="autres">Autres documents :</label>
+        <input type="file" id="autres" name="autres[]" class="form-control" multiple><br>
+
+        <input type="submit" value="Soumettre" name="validerInfo"    class="btn btn-primary form-control">
+    </form>
+
+    <script>
+        const inputs = document.querySelectorAll('input[type="text"], input[type="email"]');
+
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => {
+                if (!input.checkValidity()) {
+                    input.classList.add('invalid');
+                } else {
+                    input.classList.remove('invalid');
+                }
+            });
+        });
+    </script>
+</body>
+
+{% endblock %}

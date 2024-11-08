@@ -1,0 +1,339 @@
+{% extends 'baseloginsansdetection.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <head>
+        <!-- Inclure Bootstrap JS -->
+        <!-- Inclure MDB JS -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('student-form');
+                const password = document.getElementById('loginPassword');
+                const repeatPassword = document.getElementById('repeatPassword');
+                const password2 = document.getElementById('registerPassword');
+                const repeatPassword2 = document.getElementById('registerRepeatPassword');
+                const errorMessage = document.getElementById('error-message');
+                const errorMessage2 = document.getElementById('error-message2');
+
+                form.addEventListener('submit', function (event) {
+                    if (password2 && password2.value !== repeatPassword2.value) {
+                        event.preventDefault();
+                        errorMessage2.style.display = 'block';
+                    } else {
+                        errorMessage2.style.display = 'none';
+                    }
+                });
+
+                // Mettre à jour la prévisualisation de la couleur
+                const colorPicker = document.querySelectorAll('input[type="color"]');
+                colorPicker.forEach(picker => {
+                    picker.addEventListener('input', function() {
+                        const colorPreview = picker.nextElementSibling;
+                        colorPreview.style.backgroundColor = picker.value;
+                    });
+                });
+
+                // Rendre les pills toujours cliquables
+                const pills = document.querySelectorAll('.nav-link');
+                pills.forEach(pill => {
+                    pill.addEventListener('click', function (event) {
+                        pills.forEach(p => p.classList.remove('active'));
+                        event.target.classList.add('active');
+                    });
+                });
+            });
+        </script>
+    </head>
+    <style>
+        /* Assurer que les boutons ne changent pas de taille lors du clic */
+        .btn-primary {
+            transform: none !important; /* Pas de transformation */
+            box-shadow: none !important; /* Pas d'ombre portée */
+            outline: none; /* Pas de contour */
+        }
+
+        /* Ajuster le comportement des états focus et actif */
+        .btn-primary:focus, .btn-primary:active {
+            transform: none !important; /* Pas de transformation */
+            box-shadow: none !important; /* Pas d'ombre portée */
+        }
+
+        /* Assurer une largeur fixe pour le bouton */
+        .btn-container .btn {
+            width: auto; /* Ajuste la largeur */
+            padding: 0.375rem 0.75rem; /* Ajuste le padding */
+        }
+    </style>
+
+
+
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <!-- Pills navs -->
+
+
+                <!-- Pills content -->
+                <form id="student-form" action="{{ path('app_ajouter_inventaire') }}" method="post">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                            <p class="text-center" style="color: #0d6efd">Attributs :</p>
+
+                            <!-- Prénom et nom -->
+                            <div class="row">
+                                <div class="col-md-4 mb-4">
+                                    <div>
+                                        <label class="form-label" for="longueur">Longueur</label>
+                                        <input type="text" name="longueur" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div>
+                                        <label class="form-label" for="largeur">Largeur</label>
+                                        <input type="text" name="largeur" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div>
+                                        <label class="form-label" for="hauteur">Hauteur</label>
+                                        <input type="text" name="hauteur" class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="diametre">Diamètre</label>
+                                        <input type="text" id="diametre" name="diametre" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="unite">Unité</label>
+                                        <select id="unite" name="unite-diametre" class="form-select">
+                                            <option value="Millimètre">Millimètre</option>
+                                            <option value="Centimètre">Centimètre</option>
+                                            <option value="Mètre">Mètre</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sélecteur de couleur -->
+                            <div class="row">
+                                <div class="col-md-4 mb-4">
+                                    <div>
+                                        <label class="form-label" for="materiaux">Matériaux</label>
+                                        <input type="text" name="materiaux" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2" for="colorPicker1">Choisissez une couleur</label>
+                                        <input type="color" id="colorPicker1" name="color1" class="form-control form-control-color" value="#563d7c">
+                                        <div class="colorPreview" style="width: 40px; height: 40px; margin-left: 10px; background-color: #563d7c;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-4">
+                                    <div>
+                                        <label class="form-label" for="marque">Marque</label>
+                                        <input type="text" name="marque" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div>
+                                        <label class="form-label" for="modele">Modèle</label>
+                                        <input type="text" name="modele" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div>
+                                        <label class="form-label" for="etat">État</label>
+                                        <select id="etat" name="etat" class="form-select" required>
+                                            <option value="Neuf">Neuf</option>
+                                            <option value="Très bon état">Très bon état</option>
+                                            <option value="Bon état">Bon état</option>
+                                            <option value="Etat correct">Etat correct</option>
+                                            <option value="Mauvais état">Mauvais état</option>
+                                            <option value="Trés Mauvais état">Trés Mauvais état</option>
+                                            <option value="Occasion">Occasion</option>
+                                            <option value="Reconditionné">Reconditionné</option>
+                                            <option value="Reconditionné avec garantie">Reconditionné avec garantie</option>
+                                            <option value="Reconditionné sans besoin de garantie">Reconditionné sans garantie</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-4">
+                                <label class="form-label" for="description">Description et commentaires</label>
+                                <textarea name="description" id="description" class="form-control" required></textarea>
+                            </div>
+
+                            <!-- Error message -->
+                            <div class="mb-4">
+                                <p id="error-message" style="display: none; color: red;">Les deux mots de passe ne correspondent pas.</p>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+                            <p class="text-center" style="color: #0d6efd">Diagnostic :</p>
+
+                            <!-- Sélecteurs -->
+                            <div class="mb-4">
+                                <label class="form-label" for="reemploi">Potentiel de réemploi</label>
+                                <select id="reemploi" name="reemploi" class="form-select" required>
+                                    <option value="">Sélectionnez</option>
+                                    <option value="Très élevé">Très élevé</option>
+                                    <option value="Élevé">Élevé</option>
+                                    <option value="Moyen">Moyen</option>
+                                    <option value="Mauvais">Mauvais</option>
+                                    <option value="Aucun">Aucun</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="reutilisation">Potentiel de réutilisation</label>
+                                <select id="reutilisation" name="reutilisation" class="form-select" required>
+                                    <option value="">Sélectionnez</option>
+                                    <option value="Très élevé">Très élevé</option>
+                                    <option value="Élevé">Élevé</option>
+                                    <option value="Moyen">Moyen</option>
+                                    <option value="Mauvais">Mauvais</option>
+                                    <option value="Aucun">Aucun</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="recyclage">Potentiel de recyclage</label>
+                                <select id="recyclage" name="recyclage" class="form-select" required>
+                                    <option value="">Sélectionnez</option>
+                                    <option value="Très élevé">Très élevé</option>
+                                    <option value="Élevé">Élevé</option>
+                                    <option value="Moyen">Moyen</option>
+                                    <option value="Mauvais">Mauvais</option>
+                                    <option value="Aucun">Aucun</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="precisions">Précisions sur le potentiel de réemploi, réutilisation, recyclage</label>
+                                <textarea id="precisions" name="precisions" class="form-control" rows="4"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="modeAssemblage">Mode d'assemblage</label>
+                                <textarea id="modeAssemblage" name="modeAssemblage" class="form-control"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="methodologieDepose">Méthodologie de dépose</label>
+                                <textarea id="methodologieDepose" name="methodologieDepose" class="form-control"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="modaliteTransport">Modalités de transport</label>
+                                <textarea id="modaliteTransport" name="modaliteTransport" class="form-control"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="conditionnement">Conditionnement</label>
+                                <textarea id="conditionnement" name="conditionnement" class="form-control"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="risquesPrecautions">Risques et précautions</label>
+                                <textarea id="risquesPrecautions" name="risquesPrecautions" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-actions" role="tabpanel" aria-labelledby="tab-actions">
+                            <p class="text-center" style="color: #0d6efd">Actions :</p>
+
+                            <!-- Select Etape -->
+                            <div class="mb-4">
+                                <label class="form-label" for="etape">Étape</label>
+                                <select id="etape" name="etape" class="form-select" required>
+                                    <option value="diagnostic">Diagnostic</option>
+                                    <option value="traitement">Traitement</option>
+                                    <option value="en_vente">En Vente</option>
+                                    <option value="sortie">Sortie</option>
+                                </select>
+                            </div>
+
+                            <!-- Quantité et Unité -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label" for="quantite">Quantité</label>
+                                    <input type="number" id="quantite" name="quantite" class="form-control" required />
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label" for="unite">Unité</label>
+                                    <select id="unite" name="unite-quantite" class="form-select" required>
+                                        <option value="centimetre">Centimètre</option>
+                                        <option value="millimetre">Millimètre</option>
+                                        <option value="metre">Mètre</option>
+                                        <option value="metre_carre">Mètre Carré</option>
+                                        <option value="metre_cube">Mètre Cube</option>
+                                        <option value="kg">Kg</option>
+                                        <option value="tonne">Tonne</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="mb-4">
+                                <label class="form-label" for="actions">Actions</label>
+                                <select id="actions" name="actions" class="form-select" required>
+                                    <option value="vendu">Vendu</option>
+                                    <option value="recycle">Recyclé</option>
+                                    <option value="donne">Donné</option>
+                                    <option value="jete">Jeté</option>
+                                    <option value="fusionne">Fusionné</option>
+                                </select>
+                            </div>
+
+                            <!-- Disponibilité -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label" for="date_debut">Date de début</label>
+                                    <input type="date" id="date_debut" name="date_debut" class="form-control" required />
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label" for="date_fin">Date de fin</label>
+                                    <input type="date" id="date_fin" name="date_fin" class="form-control" required />
+                                </div>
+                            </div>
+
+                            <!-- Localisation -->
+                            <div class="mb-4">
+                                <label class="form-label" for="localisation">Localisation</label>
+                                <select id="localisation" name="localisation" class="form-select" required>
+                                    <!-- Remplacez les options ci-dessous par les localisations réelles disponibles -->
+                                    {% for site in sites %}
+                                        <option value="{{ site.id }}">{{ site.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Submit button -->
+                            <div class="btn-container">
+                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="tab-login" data-bs-toggle="pill" href="#pills-login" role="tab" aria-controls="pills-login" aria-selected="true">Attributs</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="tab-register" data-bs-toggle="pill" href="#pills-register" role="tab" aria-controls="pills-register">Diagnostic</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="tab-actions" data-bs-toggle="pill" href="#pills-actions" role="tab" aria-controls="pills-actions">Actions</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

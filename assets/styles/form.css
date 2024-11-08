@@ -1,0 +1,59 @@
+.header {
+    text-align: center;
+    width: 640px;
+}
+
+.header img {
+    max-height: 22.5vw;
+    max-width: 90vw;
+    height: 160px;
+    width: 640px;
+    border: 1px solid rgb(218, 220, 224);
+    border-radius: 8px;
+    margin-top: 12px;
+}
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 2px solid #000; /* Bordure de 2 pixels solide noire */
+    padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+}
+.titre{
+    align-self: center;
+}
+.fieldsetcustom {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    border: 2px solid #000; /* Bordure de 2 pixels solide noire */
+    padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+}
+.specialbody
+{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrer horizontalement */
+}
+.form-container {
+    margin-top: 20px; /* Espace entre l'en-tête et le formulaire */
+    /* Largeur du formulaire égale à celle de l'image */
+    
+    padding: 20px; /* Marge intérieure du formulaire */
+}
+input {
+    font-family: Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: .2px;
+        line-height: 20px;
+        color: rgb(32, 33, 36);
+        border: none; /* Supprime les contours */
+        border-bottom: 1px solid rgb(32, 33, 36); /* Ajoute un trait en bas */
+        outline: none; /* Supprime la bordure bleue de mise au point */
+}
+.hidden {
+    display: none;
+}

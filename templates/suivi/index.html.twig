@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suivi index{% endblock %}
+
+{% block body %}
+    <h1>Suivi index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Flux</th>
+                <th>Typecontenant</th>
+                <th>Volumecontenant</th>
+                <th>Poids</th>
+                <th>Nbr de contenants</th>
+                <th>Qualitedetribennes</th>
+                <th>Collectebennes</th>
+                <th>Datedesoumission</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for suivi in suivis %}
+            <tr>
+                <td>{{ suivi.flux }}</td>
+                <td>{{ suivi.typecontenant }}</td>
+                <td>{{ suivi.volumecontenant }}</td>
+                <td>{{ suivi.poids }}</td>
+                <td>{{ suivi.collecte }}</td>
+                <td>{{ suivi.qualitedetribennes }}</td>
+                <td>{{ suivi.collectebennes }}</td>
+                <td>{{ suivi.datedesoumission|date('Y-m-d') }}</td>
+                <td>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="14">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

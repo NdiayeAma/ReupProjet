@@ -1,0 +1,160 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <head>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                var clientSelect = document.getElementById('clientSelect');
+                var siteSelect = document.getElementById('siteSelect');
+                var hallSelect = document.getElementById('hallSelect');
+                var evenementSelect = document.getElementById('evenementSelect');
+
+                clientSelect.addEventListener('change', function() {
+                    var clientId = clientSelect.value;
+                    fetch('/get_evenements_by_client/' + clientId)
+                        .then(response => response.json())
+                        .then(data => {
+                            evenementSelect.innerHTML = '';
+                            data.forEach(function (evenement) {
+                                var option = document.createElement('option');
+                                option.value = evenement.id;
+                                option.text = evenement.nom;
+                                evenementSelect.appendChild(option);
+                            });
+                            evenementSelect.dispatchEvent(new Event('change'));
+                        });
+                });
+
+                evenementSelect.addEventListener('change', function() {
+                    var evenementId = evenementSelect.value;
+                    fetch('/get_sites_by_evenement/' + evenementId)
+                        .then(response => response.json())
+                        .then(data => {
+                            siteSelect.innerHTML = '';
+                            data.forEach(function (site) {
+                                var option = document.createElement('option');
+                                option.value = site.id;
+                                option.text = site.nom;
+                                siteSelect.appendChild(option);
+                            });
+                            siteSelect.dispatchEvent(new Event('change'));
+                        });
+                });
+
+                siteSelect.addEventListener('change', function() {
+                    hallSelect.innerHTML = '';
+                    var siteId = siteSelect.value;
+                    fetch('/get_centres_by_site/' + siteId)
+                        .then(response => response.json())
+                        .then(data => {
+                            hallSelect.innerHTML = '';
+                            data.forEach(function (centre) {
+                                var option = document.createElement('option');
+                                option.value = centre.id;
+                                option.text = centre.nom;
+                                hallSelect.appendChild(option);
+                            });
+                        });
+                });
+            });
+        </script>
+        <style>
+            .titre{
+                align-self: center;
+            }
+            .fieldsetcustom {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                border: 1px solid #000; /* Bordure de 2 pixels solide noire */
+                padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <form action="{{ path('handlesuiviphotocentredetri') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label for="clientSelect" style="font-weight: 500;">Client : </label>
+            <select id="clientSelect" name="client" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner les clients</option>
+                {% for client in clients %}
+                    <option value="{{ client.id }}">{{ client.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="evenementSelect" style="font-weight: 500;">Evénement:</label>
+            <select id="evenementSelect" name="evenement" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un événement</option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="siteSelect" style="font-weight: 500;">Site :</label>
+            <select id="siteSelect" name="site" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner le site</option>
+            </select>
+        </div>
+
+        <div id="hallSelection" class="form-group mb-3">
+            <label for="hallSelect" style="font-weight: 500;">Centre de tri :</label>
+            <select id="hallSelect" name="centredetri" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un centre de tri</option>
+            </select>
+        </div>
+
+        <!-- Photos avec leurs commentaires -->
+        <div class="photo-group fieldsetcustom">
+            <input type="text"  name="titrephotoglobale" value="Etat centre de tri" class="form-control" hidden="hidden"><br>
+            <label for="photoglobale">Photo globale du centre :</label>
+            <input type="file" id="photoglobale" name="photoglobale" class="form-control"><br>
+            <label for="commentairephotoglobale">Commentaire Photo globale :</label>
+            <textarea id="commentairephotoglobale" name="commentairephotoglobale" rows="4" cols="50" class="form-control"></textarea><br>
+        </div>
+
+        <div class="photo-group fieldsetcustom">
+            <input type="text"  name="titrephotobennecarton" value="Benne carton" class="form-control" hidden="hidden"><br>
+
+            <label for="photobennecarton">Photo benne carton :</label>
+            <input type="file" id="photobennecarton" name="photobennecarton" class="form-control"><br>
+            <label for="commentairephotobennecarton">Commentaire Photo benne carton :</label>
+            <textarea id="commentairephotobennecarton" name="commentairephotobennecarton" rows="4" cols="50" class="form-control"></textarea><br>
+        </div>
+
+        <div class="photo-group fieldsetcustom">
+            <input type="text"  name="titrephotobennedr" value="Benne dr" class="form-control" hidden="hidden"><br>
+
+            <label for="photobennedr">Photo benne DR :</label>
+            <input type="file" id="photobennedr" name="photobennedr" class="form-control"><br>
+            <label for="commentairephotobennedr">Commentaire Photo benne DR :</label>
+            <textarea id="commentairephotobennedr" name="commentairephotobennedr" rows="4" cols="50" class="form-control"></textarea><br>
+        </div>
+
+        <div class="photo-group fieldsetcustom">
+            <input type="text"  name="titrecompacteur" value="Compacteur" class="form-control" hidden="hidden"><br>
+
+            <label for="compacteur">Photo compacteur :</label>
+            <input type="file" id="compacteur" name="compacteur" class="form-control"><br>
+            <label for="commentairecompacteur">Commentaire Photo compacteur:</label>
+            <textarea id="commentairecompacteur" name="commentairecompacteur" rows="4" cols="50" class="form-control"></textarea><br>
+        </div>
+
+        <div class="photo-group fieldsetcustom">
+            <input type="text"  name="titretabledetri"  value="Table de tri" class="form-control" hidden="hidden"><br>
+
+            <label for="tabledetri">Photo table de tri :</label>
+            <input type="file" id="tabledetri" name="tabledetri" class="form-control"><br>
+            <label for="commentairetabledetri">Commentaire Photo table de tri :</label>
+            <textarea id="commentairetabledetri" name="commentairetabledetri" rows="4" cols="50" class="form-control"></textarea><br>
+        </div>
+
+        <div class="photo-group fieldsetcustom">
+            <input type="text"  name="titremeuble" value="Meuble porte sache PET/Recyclable" class="form-control" hidden="hidden"><br>
+            <label for="meuble">Photo meuble porte sache:</label>
+            <input type="file" id="meuble" name="meuble" class="form-control"><br>
+            <label for="commentairemeuble">Commentaire Photo meuble porte sache :</label>
+            <textarea id="commentairemeuble" name="commentairemeuble" rows="4" cols="50" class="form-control"></textarea><br>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </form>
+{% endblock %}

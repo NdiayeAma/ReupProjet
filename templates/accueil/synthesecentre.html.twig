@@ -1,0 +1,203 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <head>
+        <style>
+            .card-img-top {
+                width: 60px; /* Définissez la largeur souhaitée */
+                height: 60px; /* Définissez la hauteur souhaitée */
+            }
+            .limit-height {
+                max-height: 300px; /* ou toute autre valeur en pixels ou en pourcentage */
+                overflow: auto; /* si vous voulez ajouter une barre de défilement si le contenu dépasse */
+            }
+        </style>
+
+    </head>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                            <img src="{{ asset('images/barriere.jpeg') }}"  class="card-img-top"
+                                 alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Barriérages</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.Barrierages }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/Marquagesol.jpeg') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Marquage au sol</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.marquageausol }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/tonnelle.jpeg') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Tonnelle</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.tonnelle }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/Signaletiques.jpeg') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Signaletiques</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.signaletiques }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/supportsachs.jpeg') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Supports sachs</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.supportsachs }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/balance.jpeg') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Balances</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.balances }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/rouleau.png') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Compacteur</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.compacteur }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/tabledetri.jpeg') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Table de tri</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.tabledetri }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class=" limit-height">
+            <div class="card ">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <img src="{{ asset('images/vidoir.png') }}"  class="card-img-top"
+                             alt="Hollywood Sign on The Hill" />
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Vidoirs liquide</h5>
+                    <p class="card-text" >
+                        ------ {{ centredetri.vidoirliquide }} Présent(s) -------
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+{% endblock %}

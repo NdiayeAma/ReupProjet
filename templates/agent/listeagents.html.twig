@@ -1,0 +1,52 @@
+ {% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+   {% for agent in agents %}
+
+    <div class="col">
+        <div class="card h-100">
+            {% if agent.photo is null %}
+
+            <img src="{{ asset('images/utilisateur.png') }}" class="card-img-top"
+                 alt="Hollywood Sign on The Hill" />
+                {% else %}
+
+                    <img src="{{ asset('uploads/'~ agent.photo) }}" class="card-img-top"
+                         alt="Hollywood Sign on The Hill" />
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ agent.nom }}  {{ agent.prenom }}</h5>
+                <p class="card-text" style="text-align: center;">
+                    <ul>
+                    {% if agent.datedenaissance is  not null %}
+                    <li> Date de naissance : {{ agent.datedenaissance|date('Y-m-d') }}</li>
+                        {% else %}
+                            <li> Date de naissance :</li>
+
+                    {% endif %}
+
+                    <li> Lieu de naissance : {{ agent.lieudenaissance }}</li>
+                    <li> Adresse : {{ agent.adresse }}</li>
+                    <li> Contact : {{ agent.contact }}</li>
+                    <li> Siret : {{ agent.siret }}</li>
+                    <li> Sécurité sociale : {{ agent.securitesociale }}</li>
+                    <li> Contact d'urgence : {{ agent.contacturgence }}</li>
+                    <li> Numéro du Contact d'urgence : {{ agent.contacturgencetel }}</li>
+
+
+                </ul>
+                    {% if agent.photo is null and agent.rib is null and agent.permis is null and agent.autres == '' %}
+                    <button value="Telecharger les documents" disabled class="btn btn-danger">Aucuns documents</button>
+                    {% else %}
+                        <button value="Telecharger les documents"  class="btn-primary" onclick="location.href='{{ path('telecharger_documents_agent', {'id': agent.id}) }}'" >Telecharger les documents</button>
+                        {% endif %}
+                        </p>
+            </div>
+        </div>
+    </div>
+       {% endfor %}
+
+</div>
+{% endblock %}

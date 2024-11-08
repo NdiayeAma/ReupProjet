@@ -1,0 +1,326 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planning des agents{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .calendar {
+            margin: 20px auto;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .calendar-header, .calendar-row {
+            display: flex;
+            min-width: 800px;
+        }
+        .calendar-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .calendar-cell, .calendar-header-cell {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+            position: relative;
+            font-size: 14px;
+        }
+        .agent-cell {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: left;
+            background-color: #f8f9fa;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .planning-badge, .repos ,.planning-badge-agent {
+            display: inline-block;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+
+        .planning-repos {
+            background-color: #6c757d;
+            color: white;
+        }
+        .planning-working {
+            background-color: #007bff;
+            color: white;
+        }
+        .navigation-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .calendar-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .select-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-select {
+            width: auto;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <head>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const currentDate = new Date("{{ currentDate|date('Y-m-d') }}");
+
+                // Formatter les dates en français
+                const formatterFull = new Intl.DateTimeFormat('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+                const formatterMonth = new Intl.DateTimeFormat('fr-FR', { month: 'long' });
+                const formatterDay = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'short' });
+
+                document.querySelector('.calendar-title').textContent = formatterFull.format(currentDate);
+
+                const dateCells = document.querySelectorAll('.calendar-header-cell');
+                {% for key, date in dates %}
+                dateCells[{{ key }}].textContent = formatterDay.format(new Date("{{ date|date('Y-m-d') }}"));
+                {% endfor %}
+
+                // Afficher les heures telles qu'elles sont stockées dans la base de données
+                document.querySelectorAll('.planning-working').forEach(cell => {
+                    const start = cell.dataset.start;
+                    const end = cell.dataset.end;
+                    cell.textContent = `${start.split('T')[1].substring(1, 6)} - ${end.split('T')[1].substring(1, 6)}`;
+                });
+
+                // Remplir les sélecteurs de mois et d'années
+                const monthSelector = document.getElementById('month-selector');
+                const yearSelector = document.getElementById('year-selector');
+
+                for (let month = 0; month < 12; month++) {
+                    const option = document.createElement('option');
+                    const monthDate = new Date(2000, month, 1);
+                    option.value = month;
+                    option.text = formatterMonth.format(monthDate);
+                    if (currentDate.getMonth() === month) {
+                        option.selected = true;
+                    }
+                    monthSelector.appendChild(option);
+                }
+
+                for (let year = 2020; year <= 2030; year++) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.text = year;
+                    if (currentDate.getFullYear() === year) {
+                        option.selected = true;
+                    }
+                    yearSelector.appendChild(option);
+                }
+
+                function changeDate(action) {
+                    let newDate;
+
+                    if (action === 'prev-week') {
+                        newDate = new Date(currentDate.setDate(currentDate.getDate() - 7));
+                    } else if (action === 'next-week') {
+                        newDate = new Date(currentDate.setDate(currentDate.getDate() + 7));
+                    } else {
+                        const selectedYear = yearSelector.value;
+                        const selectedMonth = monthSelector.value;
+                        newDate = new Date(selectedYear, selectedMonth, 1);
+                    }
+
+                    const newDateString = newDate.toISOString().split('T')[0];
+                    window.location.href = `/planning/tous?date=${newDateString}`;
+                }
+
+                document.querySelectorAll('.btn-primary').forEach(button => {
+                    button.addEventListener('click', () => changeDate(button.dataset.action));
+                });
+
+                monthSelector.addEventListener('change', () => changeDate('update'));
+                yearSelector.addEventListener('change', () => changeDate('update'));
+
+                // Ajouter des événements pour les actions sur les disponibilités
+                document.querySelectorAll('.planning-badge').forEach(badge => {
+                    badge.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const start = this.dataset.start;
+                        const end = this.dataset.end;
+                        const modal = document.getElementById('editModal');
+                        modal.style.display = 'block';
+                        document.getElementById('edit-start').value = start;
+                        document.getElementById('edit-end').value = end;
+                        document.getElementById('edit-id').value = id;
+                    });
+                });
+
+                document.getElementById('edit-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const id = document.getElementById('edit-id').value;
+                    const start = document.getElementById('edit-start').value;
+                    const end = document.getElementById('edit-end').value;
+
+                    fetch(`/planning/update/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ debut: start, fin: end })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Disponibilité mise à jour avec succès');
+                                location.reload();
+                            } else {
+                                alert('Erreur: ' + data.error);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+
+                document.getElementById('delete-button').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = document.getElementById('edit-id').value;
+
+                    fetch(`/planning/delete/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Disponibilité supprimée avec succès');
+                                location.reload();
+                            } else {
+                                alert('Erreur: ' + data.error);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+
+                document.querySelector('.close').addEventListener('click', function() {
+                    document.getElementById('editModal').style.display = 'none';
+                });
+
+                window.onclick = function(event) {
+                    const modal = document.getElementById('editModal');
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                }
+            });
+        </script>
+    </head>
+    <div class="container mt-4">
+        <h1 class="calendar-title"></h1>
+        <div class="navigation-buttons">
+            <button class="btn btn-primary" data-action="prev-week">&larr; Semaine précédente</button>
+            <button class="btn btn-primary" data-action="next-week">Semaine suivante &rarr;</button>
+        </div>
+        <div class="calendar-title"></div>
+        <div class="select-container">
+            <select id="month-selector" class="form-select"></select>
+            <select id="year-selector" class="form-select"></select>
+        </div>
+        <div class="calendar">
+            <div class="calendar-header">
+                <div class="agent-cell">Agent</div>
+                {% for date in dates %}
+                    <div class="calendar-header-cell"></div>
+                {% endfor %}
+            </div>
+            {% for agent in agents %}
+                <div class="calendar-row">
+                    <div class="agent-cell">{{ agent.nom }}</div>
+                    {% for date in dates %}
+                        <div class="calendar-cell">
+                            {% set hasPlanning = false %}
+                            {% for planning in plannings %}
+                                {% if planning.agentId == agent.id and planning.debut|date('Y-m-d') == date|date('Y-m-d') %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <div class="planning-badge planning-working" data-id="{{ planning.id }}" data-start="{{ planning.debut|date('Y-m-d\TH:i') }}" data-end="{{ planning.fin|date('Y-m-d\TH:i') }}">
+                                        {{ planning.statut }}
+                                    </div>
+                                    {% else %}
+                                        <div class="planning-badge-agent planning-working" data-id="{{ planning.id }}" data-start="{{ planning.debut|date('Y-m-d\TH:i') }}" data-end="{{ planning.fin|date('Y-m-d\TH:i') }}">
+                                            {{ planning.statut }}
+                                        </div>
+                                    {% endif %}
+                                    {% set hasPlanning = true %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if not hasPlanning %}
+                                <div class="repos planning-repos">Repos</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Modal pour l'édition -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <label for="edit-start">Début:</label>
+                <input type="datetime-local" id="edit-start" name="edit-start" required>
+
+                <label for="edit-end">Fin:</label>
+                <input type="datetime-local" id="edit-end" name="edit-end" required>
+
+                <button type="submit">Mettre à jour</button>
+                <button type="button" id="delete-button">Supprimer</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

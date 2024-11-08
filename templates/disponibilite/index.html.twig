@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Disponibilite index{% endblock %}
+
+{% block body %}
+    <h1>Disponibilite index</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Agent_id</th>
+            <th>Debut</th>
+            <th>Fin</th>
+            <th>All_day</th>
+            <th>Background_color</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for disponibilite in disponibilites %}
+            <tr>
+                <td>{{ disponibilite.id }}</td>
+                <td>{{ disponibilite.agentId }}</td>
+                <td>{{ disponibilite.debut ? disponibilite.debut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ disponibilite.fin ? disponibilite.fin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ disponibilite.allDay ? 'Yes' : 'No' }}</td>
+                <td>{{ disponibilite.backgroundColor }}</td>
+                <td>
+                    <a href="{{ path('app_disponibilite_show', {'id': disponibilite.id}) }}">show</a>
+                    <a href="{{ path('app_disponibilite_edit', {'id': disponibilite.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_disponibilite_new') }}">Create new</a>
+{% endblock %}
+

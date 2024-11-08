@@ -1,0 +1,40 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block title %}Formulaire creation client{% endblock %}
+
+{% block content %}
+
+
+    <form action="creationcommentaire" method="post" enctype="multipart/form-data" id="siteForm" >
+        <div>
+            <label for="evenement" ><strong>Evenement :<strong/> </label>
+            <select id="evenement" name="evenement" class="form-select" aria-label="Default select example" required>
+                <option value="">Sélectionner un Evenement</option>
+                {% for evenement in evenements %}
+                    <option value="{{ evenement.id }}">{{ evenement.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <hr>
+        <div>
+            <label for="date">Date de soumission :</label>
+            <input type="date" name="date" id="datesoumission" required>
+        </div>
+        <hr>
+        <div>
+            <label for="commentaire">Commentaire :</label>
+            <textarea  id="commentaire" name="commentaire" rows="4" cols="50" class="form-control"></textarea>
+        </div>
+
+        <hr>
+        <div>
+            <label for="photo">Sélectionnez une photo :</label>
+            <input type="file" id="photo" name="photo[]" class="form-control-file" multiple>
+        </div>
+
+
+            <button type="submit">Soumettre</button>
+    </form>
+
+
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+<head>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionnez les éléments du formulaire
+            var clientSelect = document.getElementById('clientSelect');
+            var siteSelect = document.getElementById('siteSelect');
+            var hallSelect = document.getElementById('hallSelect');
+            var evenementSelect = document.getElementById('evenementSelect');
+
+
+
+            clientSelect.addEventListener('change', function() {
+                // Récupérez l'ID du client sélectionné
+                var clientId = clientSelect.value;
+
+                   fetch('/get_evenements_by_client/' + clientId)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Effacez les options actuelles du menu déroulant des sites
+                            evenementSelect.innerHTML = '';
+                            var option = document.createElement('option');
+                            option.value = '';
+                            option.text = 'Veuillez selectionner un événement';
+                            evenementSelect.appendChild(option);
+                            // Ajoutez les nouvelles options du menu déroulant des sites
+                            data.forEach(function (evenement) {
+                                var option = document.createElement('option');
+                                option.value = evenement.id;
+                                option.text = evenement.nom;
+                                evenementSelect.appendChild(option);
+                            });
+
+                            // Une fois les sites chargés, déclenchez manuellement l'événement "change" pour mettre à jour les halls
+                            evenementSelect.dispatchEvent(new Event('change'));
+                        });
+
+            });
+            evenementSelect.addEventListener('change', function() {
+                // Récupérez l'ID du client sélectionné
+                var evenementId = evenementSelect.value;
+
+                if(evenementId === ''){
+                    siteSelect.innerHTML = '';
+                    var option = document.createElement('option');
+                    option.value = '';
+                    option.text = 'Veuillez selectionner un site';
+                    siteSelect.appendChild(option);
+                    siteSelect.dispatchEvent(new Event('change'));
+
+                }
+                else {
+                    fetch('/get_sites_by_evenement/' + evenementId)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Effacez les options actuelles du menu déroulant des sites
+                            siteSelect.innerHTML = '';
+
+                            // Ajoutez les nouvelles options du menu déroulant des sites
+                            data.forEach(function (site) {
+                                var option = document.createElement('option');
+                                option.value = site.id;
+                                option.text = site.nom;
+                                siteSelect.appendChild(option);
+                            });
+
+                            // Une fois les sites chargés, déclenchez manuellement l'événement "change" pour mettre à jour les halls
+                            siteSelect.dispatchEvent(new Event('change'));
+                        });
+                }
+            });
+
+            // Écoutez les changements dans le menu déroulant du site
+            siteSelect.addEventListener('change', function() {
+                // Récupérez l'ID du site sélectionné
+                hallSelect.innerHTML = '';
+                var siteId = siteSelect.value;
+
+                if(siteId === ''){
+                    var option = document.createElement('option');
+                    option.value = '';
+                    option.text = 'Veuillez selectionner un hall';
+                    hallSelect.appendChild(option);
+                }
+                else {
+                    // Envoyez une requête AJAX pour récupérer les halls correspondants au site
+                    fetch('/get_centres_by_site/' + siteId)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Effacez les options actuelles du menu déroulant des halls
+                            hallSelect.innerHTML = '';
+
+
+                            // Ajoutez les nouvelles options du menu déroulant des halls
+                            data.forEach(function (centre) {
+                                var option = document.createElement('option');
+                                option.value = centre.id;
+                                option.text = centre.nom;
+                                hallSelect.appendChild(option);
+                            });
+
+                        });
+                }
+            });
+
+
+        });
+
+    </script>
+</head>
+<form action="{{ path('app_synthese_detaille') }}" method="get">
+    <div>
+        <label for="clientSelect" ><strong>Client :<strong/> </label>
+        <select id="clientSelect" name="client" class="form-select" aria-label="Default select example">
+            <option value="">Sélectionner les clients</option>
+            {% for client in clients %}
+                <option value="{{ client.id }}">{{ client.nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <hr>
+    <div>
+        <label for="evennementSelect" > <strong>Evénements :<strong/> </label>
+        <select id="evenementSelect" name="evenement" class="form-select" aria-label="Default select example">
+            <option value="">Sélectionner un événement</option>
+        </select>
+    </div>
+    <hr>
+
+    <div>
+        <label for="siteSelect">Site :</label>
+        <select id="siteSelect" name="site" class="form-select" aria-label="Default select example">
+            <option value="">Sélectionner le site </option>
+        </select>
+    </div>
+    <hr>
+
+
+    <div id="hallSelection">
+        <label for="hallSelect">centre de tri :</label>
+        <select id="hallSelect" name="centredetri" class="form-select" aria-label="Default select example" required >
+            <option value="">selectionner un centre de tri</option>
+        </select>
+    </div>
+    <hr>
+    <div class="form-group col">
+        <label for="flux">Déchet:</label>
+        <select class="form-select" name="flux" >
+            <option value="">Sélectionner un type de déchet </option>
+            <option value="Bois">Bois</option>
+            <option value="Carton">Carton</option>
+            <option value="Plastique souple">Plastique souple</option>
+            <option value="PET">PET</option>
+            <option value="Canettes">Canettes</option>
+            <option value="Verre">Verre</option>
+            <option value="Moquette">Moquette</option>
+            <option value="DR">DR</option>
+            <option value="Biodechet">Biodechet</option>
+            <option value="D3EDEEE">D3E/DEEE</option>
+            <option value="Déchets dangereux">Déchets dangereux</option>
+            <option value="Catalogues et journaux">Catalogues et journaux</option>
+            <option value="Déchets médicaux">Déchets médicaux</option>
+            <option value="Huiles usagées">Huiles usagées</option>
+            <option value="Bâche">Bâche</option>
+            <option value="Mobilier">Mobilier</option>
+
+
+        </select>
+    </div>
+    <hr>
+
+
+    <label for="start_date">Date de début:</label>
+    <input type="date" name="start_date" id="start_date">
+
+    <label for="end_date">Date de fin:</label>
+    <input type="date" name="end_date" id="end_date">
+
+    <button type="submit">Rechercher</button>
+
+</form>
+
+{% endblock %}

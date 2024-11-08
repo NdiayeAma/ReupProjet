@@ -1,0 +1,192 @@
+body {
+    background-color: white;
+}
+.logoaccueil{
+    padding-left: 170px;
+    height: 103px;
+    margin-top: -21px;
+}
+
+
+
+.navigation-div{
+    background-color: #e4e4e4;
+
+}
+.imagesmenu{
+    margin-top: 18px;
+    margin-left: 34px;
+    height: 118px;
+    width: 107px;
+    padding-top: 13px;
+    margin-bottom: 16px;
+}
+
+.vr{
+    margin-left: 70px;
+    height: 325px;
+    margin-top: -39px;
+}
+.imagebaniere{
+    margin-left: 46%;
+    height: 101px;
+    margin-top: -79px;
+}
+.textebaniere{
+    font-size: 11px;
+    margin-left: 43%;
+    margin-top: -88px;
+    width: 341px;
+}
+
+.elements:hover{
+    border-radius: 20px;
+    text-shadow: 2px 4px 4px #6c757d;
+    border-bottom: 7px #1a1d20 solid;
+    background-color: #26077b5e;
+    width: 181px;
+    box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+    opacity: 0.5;
+    height: 265px;
+    padding-top: 10px;
+    margin-top: -18px;
+
+}
+.elements{
+
+    border-radius: 20px;
+    text-shadow: 2px 4px 4px #6c757d;
+    border-bottom: 7px #1a1d20 solid;
+    background-color: #26077b5e;
+    width: 178px;
+    box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+
+    height: 262px;
+    padding-top: 10px;
+    margin-top: -18px;
+}
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 3 éléments par ligne */
+    grid-gap: 20px; /* Espacement entre les cartes */
+}
+
+.iconeconnexion{
+    background-color: #ffffff;
+    border-radius: 29px;
+}
+
+
+
+.listelements{
+
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding-top: 40px;
+    height: 100%;
+    background-color: #EDE7F6;
+
+}
+.image1{
+    background-color: #343a40; /* Choisissez votre couleur de fond sombre ici */
+    color: #ffffff; /* Choisissez votre couleur de texte ici */
+    background-image: url('../images/image1.jpg'); /* Ajoutez le chemin de votre image ici */
+    background-size: cover; /* Assurez-vous que l'image couvre tout le fond */
+    background-position: center; /* Centrez l'image */
+}
+.image2{
+    background-color: #343a40; /* Choisissez votre couleur de fond sombre ici */
+    color: #ffffff; /* Choisissez votre couleur de texte ici */
+    background-image: url('../images/image2.jpg'); /* Ajoutez le chemin de votre image ici */
+    background-size: cover; /* Assurez-vous que l'image couvre tout le fond */
+    background-position: center; /* Centrez l'image */
+}
+.image3{
+    background-color: #343a40; /* Choisissez votre couleur de fond sombre ici */
+    color: #ffffff; /* Choisissez votre couleur de texte ici */
+    background-image: url('../images/image3.jpg'); /* Ajoutez le chemin de votre image ici */
+    background-size: cover; /* Assurez-vous que l'image couvre tout le fond */
+    background-position: center; /* Centrez l'image */
+}
+.titre{
+    height: 51px; background-color: #0B1E50;color: white
+}
+.titres{
+    margin-left: 45px;
+    color: #e9ecef;
+}
+.pt-5 {
+    padding-top: 3rem !important;
+}
+.my-5 {
+    margin-top: 3rem !important;
+    margin-bottom: 3rem !important;
+}
+.border-0 {
+    border: 0 !important;
+}
+.position-relative {
+    position: relative !important;
+}
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgb(0 0 0 / 18%) !important;
+}
+
+
+.member-profile {
+    top: -50px;
+    left: 0;
+}
+.text-center {
+    text-align: center !important;
+}
+.w-100 {
+    width: 100% !important;
+}
+.position-absolute {
+    position: absolute !important;
+}
+
+.member-profile img {
+    width: 100px;
+    height: 100px;
+}
+.rounded-circle {
+    border-radius: 50% !important;
+}
+.mx-auto {
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 8%) !important;
+}
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.blinking {
+    animation: blink 1s infinite;
+    margin-left: 10px;
+}
+
+.bg-image{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.boutonbleu{
+    background-color:#3565AE;
+}
+
+

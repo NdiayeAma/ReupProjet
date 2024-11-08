@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            max-width: 150px;
+            word-wrap: break-word;
+            font-size: 12px;
+        }
+        th {
+            background-color: #f2f2f2;
+            cursor: move;
+        }
+        table:not(:first-child) {
+            page-break-before: always;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Export en Excel
+            $("#btnExport").click(function () {
+                let table = document.getElementsByTagName("table");
+                TableToExcel.convert(table[0], {
+                    name: `suividetaille.xlsx`,
+                    sheet: {
+                        name: 'Usermanagement'
+                    }
+                });
+            });
+
+            // Fonction pour déplacer les colonnes
+            function moveColumn(table, from, to) {
+                const rows = table.rows;
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].cells;
+                    if (to < cells.length) {
+                        rows[i].insertBefore(cells[from], cells[to]);
+                    } else {
+                        rows[i].appendChild(cells[from]);
+                    }
+                }
+            }
+
+            // Initialiser Sortable.js sur les en-têtes de colonnes
+            const tables = document.querySelectorAll('.sortable-table');
+            tables.forEach((table) => {
+                const headers = table.querySelector('thead');
+                const sortable = new Sortable(headers, {
+                    animation: 150,
+                    onEnd: function (evt) {
+                        moveColumn(table, evt.oldIndex, evt.newIndex);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <div style="padding-bottom: 20px">
+        <strong style="color: #3565AE"> Événement : </strong>{{ evenementsuivi  }} <br>
+        <strong style="color: #3565AE"> Site :</strong> {{ centredetrisuivi.site.nom }} <br>
+        <strong style="color: #3565AE"> Centre de tri : </strong>{{ centredetrisuivi.nom }} <br>
+        <strong style="color: #3565AE"> Période de tri : </strong>{{ start_Date }} - {{ end_Date }}
+    </div>
+
+    {% set previousDate = null %}
+    {% for date, suivisByDate in suivisGroupes %}
+        <span>Suivi flux du {{ date }}</span>
+
+        <table class="sortable-table table" id="table-{{ loop.index }}">
+            <thead>
+            <tr>
+                <th>Evenement</th>
+                <th>Centre de tri</th>
+                <th>Client</th>
+                <th>Flux</th>
+                <th>Type de Contenant</th>
+                <th>Volume de Contenant</th>
+                <th>Poids</th>
+                <th>Nombre de contenants</th>
+                <th>Qualité du Tri</th>
+                <th>Date de Soumission</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for matiere, suivis in suivisByDate %}
+                {% for suiviData in suivis %}
+                    <tr>
+                        <td>{{ suiviData.suivi.evenement.nom }}</td>
+                        <td>{{ suiviData.suivi.centredetris.nom }}</td>
+                        <td>{{ suiviData.suivi.leclient.nom }}</td>
+                        <td>{{ suiviData.suivi.flux }}</td>
+                        <td>{{ suiviData.suivi.typecontenant }}</td>
+                        <td>{{ suiviData.suivi.volumecontenant }}</td>
+                        <td>{{ suiviData.suivi.poids }}</td>
+                        <td>{{ suiviData.suivi.collecte }}</td>
+                        <td>{{ suiviData.suivi.qualitedetribennes }}</td>
+                        <td>Le {{ suiviData.suivi.datedesoumission|date('d-m-Y') }} à {{ suiviData.suivi.heure|date('H:s')}} par {{ suiviData.suivi.auteur }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% set previousDate = date %}
+    {% endfor %}
+
+    <form method="post" action="/pdf-suivi" enctype="multipart/form-data">
+        <input name="client" type="number" value="{{ client.id }}" hidden="hidden">
+        <input name="centredetri" type="number" value="{{ hall.id }}" hidden="hidden">
+        <input name="start_Date" type="date" value="{{ start_Date }}" hidden="hidden">
+        <input name="evenementid" type="number" value="{{ evenement.id }}" hidden="hidden">
+        <input name="nomatiere" type="text" value="{{ matiere }}" hidden="hidden">
+        <input name="end_Date" type="date" value="{{ end_Date }}" hidden="hidden">
+        <button style="float: left" type="submit" class="btn btn-primary">
+            Télécharger en pdf
+        </button>
+    </form>
+
+    <button type="button" class="btn btn-primary" id="btnExport" style="margin-left: 10px;">
+        Exporter en excel
+    </button>
+
+    <button onclick="location.href='{{ path('app_recherche_synthese_detaille') }}'" type="button" class="btn btn-primary">
+        Retour
+    </button>
+{% endblock %}

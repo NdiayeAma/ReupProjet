@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Formulairedechethuile{% endblock %}
+
+{% block body %}
+    <h1>Modifier Formulairedechethuile</h1>
+
+    {{ include('formulairedechethuile/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a class="btn btn-primary" href="{{ path('app_formulairedechethuile_index') }}">Retour menu</a>
+
+    {{ include('formulairedechethuile/_delete_form.html.twig') }}
+{% endblock %}

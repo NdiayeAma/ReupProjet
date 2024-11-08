@@ -1,0 +1,207 @@
+{% extends 'baseloginsansdetection.html.twig' %}
+
+{% block body %}
+    <head>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                var clientSelect = document.getElementById('clientSelect');
+                var siteSelect = document.getElementById('siteSelect');
+                var hallSelect = document.getElementById('hallSelect');
+                var evenementSelect = document.getElementById('evenementSelect');
+
+                clientSelect.addEventListener('change', function() {
+                    var clientId = clientSelect.value;
+
+                    fetch('/get_evenements_by_client/' + clientId)
+                        .then(response => response.json())
+                        .then(data => {
+                            evenementSelect.innerHTML = '';
+                            var option = document.createElement('option');
+                            option.value = '';
+                            option.text = 'Tous les événements';
+                            evenementSelect.appendChild(option);
+
+                            data.forEach(function(evenement) {
+                                var option = document.createElement('option');
+                                option.value = evenement.id;
+                                option.text = evenement.nom;
+                                evenementSelect.appendChild(option);
+                            });
+
+                            evenementSelect.dispatchEvent(new Event('change'));
+                        });
+                });
+
+                evenementSelect.addEventListener('change', function() {
+                    var evenementId = evenementSelect.value;
+
+                    fetch('/get_sites_by_evenement/' + evenementId)
+                        .then(response => response.json())
+                        .then(data => {
+                            siteSelect.innerHTML = '';
+                            var option = document.createElement('option');
+                            option.value = '';
+                            option.text = 'Tous les sites';
+                            siteSelect.appendChild(option);
+
+                            data.forEach(function(site) {
+                                var option = document.createElement('option');
+                                option.value = site.id;
+                                option.text = site.nom;
+                                siteSelect.appendChild(option);
+                            });
+
+                            siteSelect.dispatchEvent(new Event('change'));
+                        });
+                });
+
+                siteSelect.addEventListener('change', function() {
+                    hallSelect.innerHTML = '';
+                    var siteId = siteSelect.value;
+
+                    fetch('/get_centres_by_site/' + siteId)
+                        .then(response => response.json())
+                        .then(data => {
+                            hallSelect.innerHTML = '';
+                            var option = document.createElement('option');
+                            option.value = '';
+                            option.text = 'Tous les centres de tri';
+                            hallSelect.appendChild(option);
+
+                            data.forEach(function(centre) {
+                                var option = document.createElement('option');
+                                option.value = centre.id;
+                                option.text = centre.nom;
+                                hallSelect.appendChild(option);
+                            });
+                        });
+                });
+            });
+        </script>
+        <style>
+            .card-img-top {
+                width: 60px;
+                height: 60px;
+            }
+            .info-section {
+                padding-bottom: 20px;
+            }
+            .info-section strong {
+                color: #3565AE;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+            }
+            th {
+                background-color: #f2f2f2;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <form method="get">
+        <div class="info-section">
+            <strong>Client :</strong> {% if previousclient is not empty %}{{ previousclient.nom }}{% else %}Sélectionner les clients{% endif %}
+        </div>
+        <div class="info-section">
+            <strong>Evénement :</strong> {% if previousevenement is not empty %}{{ previousevenement.nom }}{% else %}Sélectionner un événement{% endif %}
+        </div>
+        <div class="info-section">
+            <strong>Site :</strong> {% if previoussite is not empty %}{{ previoussite.nom }}{% else %}Sélectionner le site{% endif %}
+        </div>
+        <div class="info-section">
+            <strong>Centre de tri :</strong> {% if previoushall is not empty %}{{ previoushall.nom }}{% else %}Sélectionner un centre de tri{% endif %}
+        </div>
+        <div class="info-section">
+            <strong>Déchet :</strong> {% if previousmatiere is not empty %}{{ previousmatiere }}{% else %}Sélectionner un type de déchet{% endif %}
+        </div>
+        <div class="info-section">
+            <strong>Date de début :</strong> {{ datedebut }}
+        </div>
+        <div class="info-section">
+            <strong>Date de fin :</strong> {{ datedefin }}
+        </div>
+    </form>
+    <hr>
+    <div class="container">
+        <table>
+
+            {% for row in cumul_poids %}
+                {% if loop.index0 % 3 == 0 %}
+                    <tr style="border-color: black">
+                {% endif %}
+                <td>
+                    <div class="card h-100">
+                        <div class="position-relative">
+                            <div class="position-absolute top-0 end-0 p-2">
+                                {% if row.matiere == 'Carton' %}
+                                    <img src="{{ images['Carton'] }}" class="card-img-top" alt="Image de Carton"/>
+                                {% elseif row.matiere == 'Plastique souple' %}
+                                    <img src="{{ images['Plastique souple'] }}" class="card-img-top" alt="Image de Plastique souple"/>
+                                {% elseif row.matiere == 'Bois' %}
+                                    <img src="{{ images['Bois'] }}" class="card-img-top" alt="Image de Bois"/>
+                                {% elseif row.matiere == 'PET' %}
+                                    <img src="{{ images['PET'] }}" class="card-img-top" alt="Image de PET"/>
+                                {% elseif row.matiere == 'Canettes' %}
+                                    <img src="{{ images['Canettes'] }}" class="card-img-top" alt="Image de Canettes"/>
+                                {% elseif row.matiere == 'Verre' %}
+                                    <img src="{{ images['Verre'] }}" class="card-img-top" alt="Image de Verre"/>
+                                {% elseif row.matiere == 'Moquette' %}
+                                    <img src="{{ images['Moquette'] }}" class="card-img-top" alt="Image de Moquette"/>
+                                {% elseif row.matiere == 'DR' %}
+                                    <img src="{{ images['DR'] }}" class="card-img-top" alt="Image de DR"/>
+                                {% elseif row.matiere == 'Biodechet' %}
+                                    <img src="{{ images['Biodechet'] }}" class="card-img-top" alt="Image de Biodechet"/>
+                                {% elseif row.matiere == 'D3EDEEE' %}
+                                    <img src="{{ images['D3EDEEE'] }}" class="card-img-top" alt="Image de D3EDEEE"/>
+                                {% elseif row.matiere == 'Déchets dangereux' %}
+                                    <img src="{{ images['Déchets dangereux'] }}" class="card-img-top" alt="Image de Déchets dangereux"/>
+                                {% elseif row.matiere == 'Catalogues et journaux' %}
+                                    <img src="{{ images['Catalogues et journaux'] }}" class="card-img-top" alt="Image de Catalogues et journaux"/>
+                                {% elseif row.matiere == 'Déchets médicaux' %}
+                                    <img src="{{ images['Déchets médicaux'] }}" class="card-img-top" alt="Image de Déchets médicaux"/>
+                                {% elseif row.matiere == 'Huiles usagées' %}
+                                    <img src="{{ images['Huiles usagées'] }}" class="card-img-top" alt="Image de Huiles usagées"/>
+                                {% elseif row.matiere == 'Bâche' %}
+                                    <img src="{{ images['Bâche'] }}" class="card-img-top" alt="Image de Bâche"/>
+                                {% elseif row.matiere == 'Mobilier' %}
+                                    <img src="{{ images['Mobilier'] }}" class="card-img-top" alt="Image de Mobilier"/>
+                                {% else %}
+                                    <img src="{{ images['default'] }}" class="card-img-top" alt="Image par défaut"/>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+
+                    <h5 class="card-title">{{ row.matiere }}</h5>
+                </td>
+
+                <td>
+
+                <p class="card-text">
+                        ------ {{ row.poids_total }} KG -------
+                        <br>
+                        - Avec {{ row.bacsortis }} <strong>contenants(s)</strong> sorti(s) : {{ row.poids_totalbac }} KG
+                        <br>
+                        - Et {{ row.bennessorties }} <strong>benne(s)</strong> sortie(s) dont {{ row.bennepese }} pesée(s)
+                    </p>
+                </td>
+                {% if loop.index0 % 3 == 2 %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% if cumul_poids|length % 3 != 0 %}
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+    {% if cumul_poids is empty %}
+        Aucune donnée pour le moment
+    {% endif %}
+{% endblock %}

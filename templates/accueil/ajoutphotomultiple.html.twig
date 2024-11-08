@@ -1,0 +1,48 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+
+
+{% block content %}
+
+    <head xmlns="http://www.w3.org/1999/html">
+        <style>
+            .titre{
+                align-self: center;
+            }
+            .fieldsetcustom {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                border: 2px solid #000; /* Bordure de 2 pixels solide noire */
+                padding: 20px; /* Ajout de marge intérieure pour l'espace autour du contenu */
+            }
+        </style>
+
+        <script>
+
+        </script>
+        <style>
+
+        </style>
+    </head>
+
+
+
+
+
+
+    <form action="/submit-photo-multiple-form" method="post" enctype="multipart/form-data">
+
+        <div>
+            <label for="photo">Sélectionnez une photo :</label>
+            <input type="file" id="photo" name="photo[]" class="form-control-file" multiple>
+        </div>
+
+        <hr>
+
+        <button type="submit" class="btn btn-primary">Soumettre</button>
+    </form>
+
+
+
+{% endblock %}

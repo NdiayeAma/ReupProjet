@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les disponibilités{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #calendar {
+            max-width: 70%;
+        }
+        #details {
+            max-width: 30%;
+            overflow-y: auto;
+            max-height: 70vh;
+            padding: 15px;
+            border-left: 1px solid #ddd;
+        }
+        .modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .availability-info {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .availability-info p {
+            margin: 0;
+        }
+        .btn-primary {
+            margin-top: 10px;
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+
+    <script>
+        let selectedDate = '';
+        let agentDisponibilites = {};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                timeZone: 'Europe/Paris',
+                headerToolbar: {
+                    start: 'prev,next today',
+                    center: 'title',
+                    end: 'dayGridMonth,timeGridWeek'
+                },
+                events: {{ data|raw }},
+                dateClick: function(info) {
+                    selectedDate = info.dateStr;
+                    // Fetch and display the list of available agents for the clicked date
+                    fetch(`/disponibilites/date/${info.dateStr}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            let detailsEl = document.getElementById('details');
+                            detailsEl.innerHTML = '<h5>Disponibilités pour ' + info.dateStr + '</h5>';
+                            agentDisponibilites = {};
+                            if (data.length > 0) {
+                                data.forEach(dispo => {
+                                    agentDisponibilites[dispo.agent_id] = { debut: dispo.debut, fin: dispo.fin };
+                                    detailsEl.innerHTML += `<div class="availability-info">
+                                        <p>${dispo.agent} - ${dispo.debut}h - ${dispo.fin}h</p>
+                                        <button class="btn btn-primary" onclick="showPlanifierModal(${dispo.agent_id}, '${dispo.debut}', '${dispo.fin}', '${info.dateStr}')">Plannifier</button>
+                                    </div>`;
+                                });
+                            } else {
+                                detailsEl.innerHTML += '<p>Aucune disponibilité pour cette date.</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching disponibilites:', error);
+                            alert('Une erreur est survenue lors de la récupération des disponibilités.');
+                        });
+                }
+            });
+            calendar.render();
+        });
+
+        function showPlanifierModal(agentId, start, end, date) {
+            // Set the agent_id and date in hidden inputs
+            document.getElementById('agent_id').value = agentId;
+            document.getElementById('selected_date').value = date;
+
+            // Show the modal
+            var modal = new bootstrap.Modal(document.getElementById('planifierModal'));
+            modal.show();
+        }
+
+        function submitPlanifierForm() {
+            const agentId = document.getElementById('agent_id').value;
+            const date = document.getElementById('selected_date').value;
+            const start = date + 'T' + document.getElementById('start_time').value;
+            const end = date + 'T' + document.getElementById('end_time').value;
+            const statut = 'travail';
+
+            const agentDispo = agentDisponibilites[agentId];
+            const agentDispoStart = date + 'T' + agentDispo.debut;
+            const agentDispoEnd = date + 'T' + agentDispo.fin;
+
+            // Vérifiez si les heures de début et de fin sont en dehors des heures disponibles
+            if (start < agentDispoStart || end > agentDispoEnd) {
+                if (!confirm("Les heures sélectionnées sont en dehors des heures disponibles de l'agent. Voulez-vous continuer ?")) {
+                    return; // Si l'utilisateur annule, ne pas soumettre le formulaire
+                }
+            }
+
+            const data = {
+                agent_id: agentId,
+                start: start,
+                end: end,
+                statut: statut
+            };
+
+            fetch('/planifier', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Planning créé avec succès');
+                        // Actualisez la page ou effectuez d'autres actions
+                        location.reload();
+                    } else {
+                        alert('Échec de la création du planning : ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div id="calendar" class="col-md-8"></div>
+            <div id="details" class="col-md-4"></div>
+        </div>
+        <a href="{{ path('planning_tous') }}" class="btn btn-secondary mt-3">Visualiser le planning de tous les agents</a>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="planifierModal" tabindex="-1" aria-labelledby="planifierModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="planifierModalLabel">Planifier une disponibilité</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="planifierForm">
+                        <input type="hidden" id="agent_id" name="agent_id">
+                        <input type="hidden" id="selected_date" name="selected_date">
+                        <div class="mb-3">
+                            <label for="start_time" class="form-label">Heure de début</label>
+                            <input type="time" class="form-control" id="start_time" name="start_time" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_time" class="form-label">Heure de fin</label>
+                            <input type="time" class="form-control" id="end_time" name="end_time" required>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="submitPlanifierForm()">Plannifier</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

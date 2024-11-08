@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire{% endblock %}
+
+{% block body %}
+    <h1>Formulaire</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ formulaire.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom de la compagnie</th>
+                <td>{{ formulaire.nomcompagnie }}</td>
+            </tr>
+            <tr>
+                <th>Hall</th>
+                <td>{{ formulaire.hall }}</td>
+            </tr>
+            <tr>
+                <th>Allée et numero stand</th>
+                <td>{{ formulaire.alleenumerostand }}</td>
+            </tr>
+            <tr>
+                <th>Contact standiste</th>
+                <td>{{ formulaire.contactstandiste }}</td>
+            </tr>
+            <tr>
+                <th>Rse</th>
+                <td>{{ formulaire.rse }}</td>
+            </tr>
+            <tr>
+                <th>Don de materiaux</th>
+                <td>{{ formulaire.donnerdesmateriaux }}</td>
+            </tr>
+            <tr>
+                <th>Don de bois</th>
+                <td>{{ formulaire.donnerbois }}</td>
+            </tr>
+            <tr>
+                <th>Quantité fourniture</th>
+                <td>{{ formulaire.quantitefourniture }}</td>
+            </tr>
+            <tr>
+                <th>Quantité autres materiaux</th>
+                <td>{{ formulaire.quantiteautresmateriaux }}</td>
+            </tr>
+            <tr>
+                <th>Commentaires</th>
+                <td>{{ formulaire.commentaire }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_formulaire_index') }}">Retour</a>
+
+    <a href="{{ path('app_formulaire_edit', {'id': formulaire.id}) }}">Modifier</a>
+
+    {{ include('formulaire/_delete_form.html.twig') }}
+{% endblock %}

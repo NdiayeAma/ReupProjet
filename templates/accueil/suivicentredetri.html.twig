@@ -1,0 +1,168 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+
+    <form action="/ajoutsuivicentredetri" method="post" enctype="multipart/form-data" id="siteForm" >
+
+
+        <div class="form-group mb-3">
+            <label for="centredetri" >Centre de tri :</label>
+            <select id="centredetri" name="centredetri" class="form-select" aria-label="Default select example">
+                <option value="">Sélectionner un centre de tri</option>
+                {% for centre in centredetri %}
+                    <option value="{{ centre.id }}">{{ centre.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+
+
+        <div class="form-group mb-3">
+            <label for="epi">EPI :</label>
+            <div class="form-check">
+                <input type="radio" id="epi_present" name="epi" value="Présent" class="form-check-input" required>
+                <label for="epi_present" class="form-check-label">Présent</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="epi_manquant" name="epi" value="Manquant" class="form-check-input" required>
+                <label for="epi_manquant" class="form-check-label">Manquant</label>
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="troussedesecours">Trousse de secours :</label>
+            <div class="form-check">
+                <input type="radio" id="troussedesecours_present" name="troussedesecours" value="Présent" class="form-check-input" required>
+                <label for="troussedesecours_present" class="form-check-label">Présent</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="troussedesecours_manquant" name="troussedesecours" value="Manquant" class="form-check-input" required>
+                <label for="troussedesecours_manquant" class="form-check-label">Manquant</label>
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="materielsdenettoyage">Matériels de nettoyage :</label>
+            <div class="form-check">
+                <input type="radio" id="materielsdenettoyage_present" name="materielsdenettoyage" value="Présent" class="form-check-input" required>
+                <label for="materielsdenettoyage_present" class="form-check-label">Présent</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="materielsdenettoyage_manquant" name="materielsdenettoyage" value="Manquant" class="form-check-input" required>
+                <label for="materielsdenettoyage_manquant" class="form-check-label">Manquant</label>
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="vidoirliquide">Vidoir liquide :</label>
+            <div class="form-check">
+                <input type="radio" id="vidoirliquide_present" name="vidoirliquide" value="Présent" class="form-check-input" required>
+                <label for="vidoirliquide_present" class="form-check-label">Présent</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="vidoirliquide_manquant" name="vidoirliquide" value="Manquant" class="form-check-input" required>
+                <label for="vidoirliquide_manquant" class="form-check-label">Manquant</label>
+            </div>
+        </div>
+
+
+
+        <div class="form-group mb-3">
+            <label for="barrierages">Barrierages :</label>
+            <input type="number" id="barrierages" name="barrierages" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Bâches">Bâches :</label>
+            <input type="number" id="Bâches" name="Bâches" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="marquageausol">Marquage au sol :</label>
+            <input type="number" id="marquageausol" name="marquageausol" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="tonnelle">Tonnelle :</label>
+            <input type="number" id="tonnelle" name="tonnelle" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="signaletiques">Signalétiques :</label>
+            <input type="number" id="signaletiques" name="signaletiques" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="supportsachs">Support Sachs :</label>
+            <input type="number" id="supportsachs" name="supportsachs" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="balances">Balances :</label>
+            <input type="number" id="balances" name="balances" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="compacteur">Compacteur :</label>
+            <input type="number" id="compacteur" name="compacteur" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="tabledetri">Table de tri :</label>
+            <input type="number" id="tabledetri" name="tabledetri" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="bacdr660">Bac DR 660 :</label>
+            <input type="number" id="bacdr660" name="bacdr660" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="bacdr250">Bac DR 240 :</label>
+            <input type="number" id="bacdr240" name="bacdr240" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="bacrecycle240">Bac Recycle 240 :</label>
+            <input type="number" id="bacrecycle240" name="bacrecycle240" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="bacrecycle660">Bac Recycle 660 :</label>
+            <input type="number" id="bacrecycle660" name="bacrecycle660" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="bacbiodechet120">Bac Biodéchet 120 :</label>
+            <input type="number" id="bacbiodechet120" name="bacbiodechet120" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="bennebois">Benne Bois :</label>
+            <input type="number" id="bennebois" name="bennebois" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="bennecarton">Benne Carton :</label>
+            <input type="number" id="bennecarton" name="bennecarton" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="benneplastiques">Benne Plastiques :</label>
+            <input type="number" id="benneplastiques" name="benneplastiques" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="commentaire">Commentaire :</label>
+            <textarea id="commentaire" name="commentaire" rows="4" cols="50" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="photo">Sélectionnez une photo :</label>
+            <input type="file" id="photo" name="photo[]" class="form-control-file" multiple>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+{% endblock %}

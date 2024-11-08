@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Lecon{% endblock %}
+
+{% block body %}
+    {% if erreur != '' %}
+        <div class="alert alert-danger">{{ erreur }}</div>
+    {% endif %}
+
+    <div class="list-group">
+        <button type="button" class="list-group-item list-group-item-action" style="background-color: lightgray">
+            Liste des agents
+        </button>
+        {% for p in agents %}
+
+            <p type="button" class="list-group-item list-group-item-action"><strong>Nom:</strong>  {{ p.nom }} <strong> Prenom:</strong> {{ p.prenom }}
+                <button onclick="location.href='{{ path('app_agent_supprimer', {'id': p.id}) }}'"
+                        class="btn btn btn-outline-danger mx-1" >Supprimer
+                </button>
+                {% set breakLoop=false %}
+                {% for r in p.roles %}
+                    {% if not breakLoop %}
+                        {%if r== 'ROLE_ADMIN' %}
+                            <label style="color: deepskyblue;float: right"> @admin </label>
+                            {% set breakLoop=true %}
+                        {% else %}
+                            <button onclick="location.href='{{ path('app_agent_role', {'id': p.id}) }}'"
+                                    class="btn btn btn-outline-info mx-1"> Autoriser à administrer
+                            </button>
+                            {% set breakLoop=true %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+
+            </p>
+
+        {% else %}
+
+
+            <button type="button" class="list-group-item list-group-item-action">Il n'existe aucun Agent pour le moment</button>
+
+
+        {% endfor %}
+    </div>
+
+{% endblock %}

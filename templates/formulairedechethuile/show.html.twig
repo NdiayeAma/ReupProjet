@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulairedechethuile{% endblock %}
+
+{% block body %}
+    <h1>Formulairedechethuile</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ formulairedechethuile.id }}</td>
+            </tr>
+            <tr>
+                <th>Nomhall</th>
+                <td>{{ formulairedechethuile.nomhall }}</td>
+            </tr>
+            <tr>
+                <th>Allee</th>
+                <td>{{ formulairedechethuile.allee }}</td>
+            </tr>
+            <tr>
+                <th>Nombredesacs</th>
+                <td>{{ formulairedechethuile.nombredesacs }}</td>
+            </tr>
+            <tr>
+                <th>Quantitesacs</th>
+                <td>{{ formulairedechethuile.quantitesacs }}</td>
+            </tr>
+            <tr>
+                <th>Nombredebidons</th>
+                <td>{{ formulairedechethuile.nombredebidons }}</td>
+            </tr>
+            <tr>
+                <th>Commentaire</th>
+                <td>{{ formulairedechethuile.commentaire }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="{{ path('app_formulairedechethuile_index') }}">Retour menu</a>
+
+    <a href="{{ path('app_formulairedechethuile_edit', {'id': formulairedechethuile.id}) }}">Modifier</a>
+
+    {{ include('formulairedechethuile/_delete_form.html.twig') }}
+{% endblock %}

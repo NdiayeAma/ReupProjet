@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire index{% endblock %}
+
+{% block body %}
+    <div style="justify-content: center;display: flex">
+      <span style="align-self: center">Liste des Formulaires </span>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            {% if formulaires is empty %}
+
+                {% else %}
+                    <th>compagnie</th>
+                    <th>Don de materiaux</th>
+                    <th>Don de bois</th>
+                    <th>Quantité fourniture</th>
+                    <th>Quantite autres materiaux</th>
+                    <th>Commentaires</th>
+                    <th>Actions</th>
+
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for formulaire in formulaires %}
+            <tr>
+                <td>{{ formulaire.nomcompagnie }}</td>
+
+                <td>{{ formulaire.donnerdesmateriaux }}</td>
+                <td>{{ formulaire.donnerbois }}</td>
+                <td>{{ formulaire.quantitefourniture }}</td>
+                <td>{{ formulaire.quantiteautresmateriaux }}</td>
+                <td>{{ formulaire.commentaire | slice(0,20) }}</td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Actions">
+                        <a class="btn btn-outline-info" href="{{ path('app_formulaire_show', {'id': formulaire.id}) }}">Consulter</a>
+                        <a class="btn btn-outline-info" href="{{ path('app_formulaire_edit', {'id': formulaire.id}) }}">Modifier</a>
+                        <a class="btn btn-outline-info" href="{{ path('app_formulaire_pdf' ,{'id': formulaire.id}) }}">tele</a>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">Aucun formulaire pour le moment</td>
+            </tr>
+        {% endfor %}
+        <div class="container" style="padding-top: 10px">
+            <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {{ knp_pagination_render(formulaires,'twitter_bootstrap_v4_pagination.html.twig') }}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        </tbody>
+    </table>
+{% endblock %}

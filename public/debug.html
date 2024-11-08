@@ -1,0 +1,147 @@
+
+
+    <style>
+        /* Définition des styles pour les tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; /* Espacement entre les tableaux */
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            max-width: 150px; /* Largeur maximale des cellules */
+            word-wrap: break-word; /* Permettre le retour à la ligne des mots longs */
+            font-size: 12px; /* Taille de la police */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        /* Appliquer une page de rupture avant chaque tableau sauf le premier */
+        table:not(:first-child) {
+            page-break-before: always;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnExport").click(function () {
+                let table = document.getElementsByTagName("table");
+                console.log(table);
+                debugger;
+                TableToExcel.convert(table[0], {
+                    name: `suividetaille.xlsx`,
+                    sheet: {
+                        name: 'Usermanagement'
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <img src="/assets/images/tiroir-d49d0b7c949d6f33d0174427a11835ff.png"  class="card-img-top"
+         />
+
+                <span>Suivi flux du 2024-06-13</span>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Evenement</th>
+                <th>Centre de tri</th>
+                <th>Client</th>
+                <th>Flux</th>
+                <th>Type de Contenant</th>
+                <th>Volume de Contenant</th>
+                <th>Poids</th>
+                <th>Nombre de contenants</th>
+                <th>Qualité du Tri</th>
+                <th>Date de Soumission</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                                                <tr>
+                        <td>evenement1</td>
+                        <td>SPA1</td>
+                        <td>Sopra</td>
+                        <td>Bois</td>
+                        <td>Benne</td>
+                        <td>660</td>
+                        <td>0</td>
+                        <td>2</td>
+                        <td>Mauvais</td>
+                        <td>Le 13-06-2024 à 22:00 par Amadou  </td>
+                    </tr>
+                                    <tr>
+                        <td>evenement1</td>
+                        <td>SPA1</td>
+                        <td>Sopra</td>
+                        <td>Bois</td>
+                        <td>Bac</td>
+                        <td>660</td>
+                        <td>6</td>
+                        <td>2</td>
+                        <td>Mauvais</td>
+                        <td>Le 13-06-2024 à 22:00 par Amadou  </td>
+                    </tr>
+                                    <tr>
+                        <td>evenement1</td>
+                        <td>SPA1</td>
+                        <td>Sopra</td>
+                        <td>Bois</td>
+                        <td>Benne</td>
+                        <td>660</td>
+                        <td>60</td>
+                        <td>1</td>
+                        <td>Mauvais</td>
+                        <td>Le 13-06-2024 à 22:29 par Amadou  </td>
+                    </tr>
+                                        </tbody>
+        </table>
+
+                    <span>Suivi flux du 2024-06-14</span>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Evenement</th>
+                <th>Centre de tri</th>
+                <th>Client</th>
+                <th>Flux</th>
+                <th>Type de Contenant</th>
+                <th>Volume de Contenant</th>
+                <th>Poids</th>
+                <th>Nombre de contenants</th>
+                <th>Qualité du Tri</th>
+                <th>Date de Soumission</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                                                <tr>
+                        <td>evenement1</td>
+                        <td>SPA1</td>
+                        <td>Sopra</td>
+                        <td>Carton</td>
+                        <td>Bac</td>
+                        <td>660</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>Mauvais</td>
+                        <td>Le 14-06-2024 à 03:00 par Amadou  </td>
+                    </tr>
+                                        </tbody>
+        </table>
+
+            
+
+
+
+
+
+
+

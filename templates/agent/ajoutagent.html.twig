@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <p style="align-content: center;width: max-content">
+        <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Ajout agent</h1></p>
+
+        {{ form_errors(registrationForm) }}
+
+        {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.prenom, {
+            label: 'Prénom'
+        }) }}
+        {{ form_row(registrationForm.nom, {
+            label: 'Nom'
+        }) }}
+        {{ form_row(registrationForm.login) }}
+        {{ form_row(registrationForm.plainPassword, {
+            label: 'Mot de passe'
+        }) }}
+        <p style="text-align: center;width: 100%;padding-top: 20px">
+            <button type="submit" class="btn btn-outline-success">Ajouter</button>
+
+        </p>
+        {{ form_end(registrationForm) }}
+    </div>
+{% endblock %}
